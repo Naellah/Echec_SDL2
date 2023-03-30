@@ -105,6 +105,8 @@ class Piece{
         //test de regression d'une piece
         void testRegressionPiece()const;
 
+        void estmangee();
+
         
 };
 

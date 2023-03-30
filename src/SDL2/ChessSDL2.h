@@ -78,6 +78,9 @@ class ChessSDL2{
         Image ChessBackground;
         Image carre_bleu;
 
+
+        Joueur joueur1;
+        Joueur joueur2;
         
 
 
@@ -119,6 +122,8 @@ class ChessSDL2{
     void SDL2coupPossibles();
 
     void affichercarre(vector <Coup> &cp);
+
+    void Initjoueur();
    
 
     

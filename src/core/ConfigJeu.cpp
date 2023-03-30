@@ -16,6 +16,8 @@ ConfigJeu :: ConfigJeu(){
         plateau.push_back(vector<Piece>(10));
     }
     joueurCourant = Couleur::BLANC;
+    nbPiecesBlanches = 16;
+    nbPiecesNoires = 16;
 }
   
 ConfigJeu :: ~ConfigJeu(){
@@ -151,19 +153,30 @@ vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
         case TypePiece::PION6:
         case TypePiece::PION7:
         case TypePiece::PION8:
-            if(piece_actuelle.getCouleur() == Couleur::BLANC){
-                cout << "couleur blanche" << endl;
-                cout << "position y : " << piece_actuelle.getPosition().getY() << endl;
-                if(piece_actuelle.getPosition().getY() == 7){
-                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX(),piece_actuelle.getPosition().getY()-2)));
-                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX(),piece_actuelle.getPosition().getY()-1)));
+            if (piece_actuelle.getCouleur() == Couleur::BLANC) {
+
+                if (piece_actuelle.getPosition().getY() == 7) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - 2)));
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - 1)));
                 }
-                else{
-                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX(),piece_actuelle.getPosition().getY()-1)));
+                else {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - 1)));
                 }
+                //teste s'il y a un pion adverse en diagonale
+                if (piece_actuelle.getPosition().getX() != 1){
+                    if (plateau[piece_actuelle.getPosition().getX() - 1][piece_actuelle.getPosition().getY() - 1].getCouleur() == Couleur::NOIR) {
+                        coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX() - 1, piece_actuelle.getPosition().getY() - 1)));
+                    }
+                }
+                if (piece_actuelle.getPosition().getX() != 8) {
+                    if (plateau[piece_actuelle.getPosition().getX() + 1][piece_actuelle.getPosition().getY() - 1].getCouleur() == Couleur::NOIR) {
+                        coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX() + 1, piece_actuelle.getPosition().getY() - 1)));
+                    }
+                }
+
             }
-            if (piece_actuelle.getCouleur() == Couleur::NOIR){
-                cout << "couleur noir" << endl;
+			else if (piece_actuelle.getCouleur() == Couleur::NOIR){
+                
                 if(piece_actuelle.getPosition().getY() == 2){
                     coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX(),piece_actuelle.getPosition().getY()+2)));
                     coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX(),piece_actuelle.getPosition().getY()+1)));
@@ -171,6 +184,20 @@ vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
                 else{
                     coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX(),piece_actuelle.getPosition().getY()+1)));
                 }
+
+                //teste s'il y a un pion adverse en diagonale
+                if (piece_actuelle.getPosition().getX() != 8) {
+                    if (plateau[piece_actuelle.getPosition().getX() + 1][piece_actuelle.getPosition().getY()].getCouleur() == Couleur::BLANC) {
+						coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX()+1,piece_actuelle.getPosition().getY()+1)));
+					}
+                
+                }
+                if (piece_actuelle.getPosition().getX() != 1) {
+                    if (plateau[piece_actuelle.getPosition().getX() - 1][piece_actuelle.getPosition().getY()].getCouleur() == Couleur::BLANC) {
+							coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX()-1,piece_actuelle.getPosition().getY()+1)));
+					}
+				}
+				
             }
 
             break;
@@ -266,7 +293,6 @@ vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
         case TypePiece::FOU1:
         case TypePiece::FOU2:
             for(int i = 1; i < 9; i++){
-                
                 coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX()+i,piece_actuelle.getPosition().getY()+i)));
                 
             }
@@ -357,16 +383,7 @@ vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
         }
     }
 
-    i = 0;
-    //test si il y a une piece entre le point de depart et le point d'arrive d'un coup
-    while(i< coupsPossibles.size()) {
-        if (coupsPossibles[i].deplacement.getX() > 8 || coupsPossibles[i].deplacement.getX() < 1 || coupsPossibles[i].deplacement.getY() > 8 || coupsPossibles[i].deplacement.getY() < 1) {
-            coupsPossibles.erase(coupsPossibles.begin() + i);
-        }
-        else {
-            i++;
-        }
-    }
+    
 
     i = 0;
     //test si le pion arrive sur une case ou il y a une piece de la meme couleur
@@ -386,6 +403,56 @@ vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
         }
     }
 
+    /*
+    switch (piece_actuelle.getType()){
+        case CAVALIER1:
+        case CAVALIER2:
+            break;
+
+       //tout le reste
+        case PION1:
+        case PION2:
+        case PION3:
+        case PION4:
+        case PION5:
+        case PION6:
+        case PION7:
+        case PION8:
+        case TOUR1:
+        case TOUR2:
+        case FOU1:
+        case FOU2:
+        case DAME:
+        case ROI:
+            i = 0;
+            while (i < coupsPossibles.size())
+            {
+                Vec2 depart = coupsPossibles[i].posi;
+                Vec2 arrivee = coupsPossibles[i].deplacement;
+                int dx = arrivee.getX() > depart.getX() ? 1 : -1;
+                int dy = arrivee.getY() > depart.getY() ? 1 : -1;
+                bool coupValide = true;
+                for (int x = depart.getX() + dx, y = depart.getY() + dy; Vec2(x, y) != arrivee; x += dx, y += dy)
+                {
+                    if (plateau[x][y].getType() != VIDE)
+                    {
+                        coupValide = false;
+                        break;
+                    }
+                }
+
+                if (!coupValide)
+                {
+                    coupsPossibles.erase(coupsPossibles.begin() + i);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+
+    }	    
+    */
     
     return coupsPossibles;
 }
@@ -559,10 +626,16 @@ Vec2 ConfigJeu :: recuperePosition(const char& lettre, const char& chiffre)const
 }
 
 void ConfigJeu :: deplacePiece(const Coup& c){
+    estMangeConfig(plateau[c.deplacement.getX()][c.deplacement.getY()]);
     plateau[c.deplacement.getX()][c.deplacement.getY()] = plateau[c.posi.getX()][c.posi.getY()];
-     plateau[c.deplacement.getX()][c.deplacement.getY()].setPosition(c.deplacement);
+    plateau[c.deplacement.getX()][c.deplacement.getY()].setPosition(c.deplacement);
     plateau[c.posi.getX()][c.posi.getY()] = Piece(Couleur::VIDEC,TypePiece::VIDE,Vec2(c.posi.getX(),c.posi.getY()));
 }
+
+
+
+
+
 
 const vector<vector<Piece>>& ConfigJeu :: getPlateau()const{
     return this->plateau;
@@ -572,11 +645,27 @@ const Couleur& ConfigJeu :: getJoueurCourant()const{
     return this->joueurCourant;
 }
 
-void ConfigJeu :: setJoueurCourant(const Couleur& c){
-    joueurCourant = c;
+void ConfigJeu :: setJoueurCourant(){
+    if (this->joueurCourant == Couleur::BLANC) {
+		this->joueurCourant = Couleur::NOIR;
+	}
+    else {
+		this->joueurCourant = Couleur::BLANC;
+	}
 }
 
-
+void ConfigJeu :: estMangeConfig(Piece &p){
+    if (p.getCouleur() == Couleur::BLANC) {
+        // p devient nulle
+        p.estmangee();
+        nbPiecesBlanches--;
+    }
+    else if (p.getCouleur() == Couleur::NOIR) {
+       // p devient nulle
+        p=Piece(Couleur::VIDEC,TypePiece::VIDE,Vec2(0,0));
+        nbPiecesNoires--;
+    }
+}
 
 
 

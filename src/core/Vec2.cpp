@@ -43,11 +43,19 @@ Vec2 Vec2::operator-(const Vec2& other) const {
     return x==other.x && y==other.y;
 }
 
+ bool Vec2::operator!=( const Vec2& other)const{
+    return x!=other.x || y!=other.y;
+}
+
+
 Vec2& Vec2::operator=(const Vec2& other){
     x = other.x;
     y = other.y;
     return *this;
 }
+
+
+
 
 void Vec2 :: setVec2(int a, int _b){
     x = a;

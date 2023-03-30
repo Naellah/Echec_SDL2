@@ -204,12 +204,8 @@ int main() {
                     //change la position de la piece selectionner avec les nouvelle coordonnées
                     jeu.deplacePiece(Coup(jeu.recuperePosition(p1[0],p1[1]),jeu.recuperePosition(p2[0],p2[1])));
                     //change le joueur courant
-                    if (jeu.getJoueurCourant() == Couleur::BLANC) {
-                        jeu.setJoueurCourant(Couleur::NOIR);
-                    }
-                    else {
-                        jeu.setJoueurCourant(Couleur::BLANC);
-                    }
+                    jeu.setJoueurCourant();
+                    
 
 
 

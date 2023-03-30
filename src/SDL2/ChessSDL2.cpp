@@ -498,31 +498,48 @@ void ChessSDL2:: afficherChrono(const Joueur& j) {
 
 
 void ChessSDL2::SDL2coupPossibles() {
-    //test pour tout les endroits ou il y a une piece s'il y a un clique
+    vector<Coup> coupSDL2;
     SDL_Event event;
-    while (SDL_PollEvent(&event)) {
+    SDL_Event event2;
+
+    // Attend le premier clic de l'utilisateur
+    SDL_WaitEvent(&event);
+
+    // Parcourt le plateau si l'utilisateur a cliqué
+    if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
         for (int i = 1; i < 9; i++) {
             for (int j = 1; j < 9; j++) {
                 if (configJeu.getPlateau()[i][j].getCouleur() == configJeu.getJoueurCourant()) {
-                    //si il y a un clique sur une piece
-                    if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
-                        //si le clique est sur la piece
-                        if (event.button.x >= 57 + 85 * (i - 1) && event.button.x <= 57 + 85 * i && event.button.y >= 55 + 85 * (j - 1) && event.button.y <= 55 + 85 * j) {
-                            //on affiche les coups possibles
-                            cout << "coups possibles de la piece en " << i << " " << j << endl;
-                            vector <Coup> coupSDL2 = configJeu.coupsPossibles(Vec2(i, j));
-                            //on affiche avec un fitre rectangulaire bleu
-                            SDL_RenderClear(renderer);
-                            for (int k = 0; k < coupSDL2.size(); k++) {
-                                cout << coupSDL2[k].deplacement.getX() << " " << coupSDL2[k].deplacement.getY() << endl;
-                                SDL_Rect recta;
-                                recta.x = 57 + 85 * (coupSDL2[k].deplacement.getX() - 1);
-                                recta.y = 55 + 85 * (coupSDL2[k].deplacement.getY() - 1);
-                                recta.w = 83;
-                                recta.h = 83;
-                                carre_bleu.draw(renderer, recta.x, recta.y, recta.h, recta.w);
-                                cout << "bien dessiner" << endl;
-                                
+                    // Vérifie si le clic est sur une pièce du joueur courant
+                    if (event.button.x >= 57 + 85 * (i - 1) && event.button.x <= 57 + 85 * i && event.button.y >= 55 + 85 * (j - 1) && event.button.y <= 55 + 85 * j) {
+                        // Affiche les coups possibles en dessinant des carrés bleus
+                        coupSDL2 = configJeu.coupsPossibles(Vec2(i, j));
+                        afficherPlateauSDL2();
+                        afficherPiecesSDL2();
+                        for (int k = 0; k < coupSDL2.size(); k++) {
+                            SDL_Rect recta;
+                            recta.x = 57 + 85 * (coupSDL2[k].deplacement.getX() - 1);
+                            recta.y = 55 + 85 * (coupSDL2[k].deplacement.getY() - 1);
+                            recta.w = 83;
+                            recta.h = 83;
+                            carre_bleu.draw(renderer, recta.x, recta.y, recta.h, recta.w);
+                        }
+                        SDL_RenderPresent(renderer);
+
+                        // Attend le deuxième clic de l'utilisateur pour mettre à jour le plateau
+                        while (SDL_WaitEvent(&event2)) {
+                            if (event2.type == SDL_MOUSEBUTTONDOWN && event2.button.button == SDL_BUTTON_LEFT) {
+                                for (int k = 0; k < coupSDL2.size(); k++) {
+                                    if (event2.button.x >= 57 + 85 * (coupSDL2[k].deplacement.getX() - 1) && event2.button.x <= 57 + 85 * coupSDL2[k].deplacement.getX() && event2.button.y >= 55 + 85 * (coupSDL2[k].deplacement.getY() - 1) && event2.button.y <= 55 + 85 * coupSDL2[k].deplacement.getY()) {
+                                        configJeu.deplacePiece(coupSDL2[k]);
+                                        break;
+                                    }
+                                }
+                                coupSDL2.clear();
+                                afficherPlateauSDL2();
+                                afficherPiecesSDL2();
+                                SDL_RenderPresent(renderer);
+                                break;
                             }
                         }
                     }
@@ -530,20 +547,8 @@ void ChessSDL2::SDL2coupPossibles() {
             }
         }
     }
-    /*
-    cout << "Rentrez la nouvelle position de la piece que vous avez choisi (ex: b2)" << endl;
-    for (int k = 0; k < coupSDL2.size(); k++) {
-        cout << coupSDL2[k].deplacement.getX() << " " << coupSDL2[k].deplacement.getY() << endl;
-        SDL_Rect recta;
-        recta.x = 57 + 85 * (coupSDL2[k].deplacement.getX() - 1);
-        recta.y = 55 + 85 * (coupSDL2[k].deplacement.getY() - 1);
-        recta.w = 83;
-        recta.h = 83;
-        configJeu.deplacePiece(Coup(configJeu.recuperePosition(p1[0], p1[1]), configJeu.recuperePosition(p2[0], p2[1])));
-        cout << "bien dessiner" << endl;
-    }*/
-
 }
+
 
 void ChessSDL2::affichercarre(vector <Coup>& cp) {
     if (cp.size() > 0) {
@@ -568,7 +573,15 @@ void ChessSDL2::affichercarre(vector <Coup>& cp) {
 
 
 
-
+void ChessSDL2::Initjoueur() {
+    joueur1.setCouleur(aleatoireCouleur());
+    if (joueur1.getCouleur() == Couleur::BLANC) {
+        joueur2.setCouleur(Couleur::NOIR);
+    }
+    else {
+        joueur2.setCouleur(Couleur::BLANC);
+    }
+}
 
 
 
@@ -577,7 +590,7 @@ void ChessSDL2::SDL2Boucle() {
     SDL_Event events;
     bool quit = false;
     
-    Joueur joueur1, joueur2;
+
     joueur1.setCouleur(aleatoireCouleur());
     if (joueur1.getCouleur() == Couleur::BLANC) {
         joueur2.setCouleur(Couleur::NOIR);
@@ -591,8 +604,7 @@ void ChessSDL2::SDL2Boucle() {
     vector <Coup> coupSDL2;
     afficherMenu();
 
-    //afficherPlateauSDL2();
-
+    afficherPlateauSDL2();
     afficherPiecesSDL2();
     SDL_RenderPresent(renderer);
 
@@ -636,12 +648,10 @@ void ChessSDL2::SDL2Boucle() {
             
         }
         //affichercarre(coupSDL2);
+        afficherPlateauSDL2();
         afficherPiecesSDL2();
         SDL2coupPossibles();
-       
-        
-        
-
+        configJeu.setJoueurCourant();
         SDL_RenderPresent(renderer);
        // On permute les deux buffers (cette fonction ne doit se faire qu'une seule fois dans la boucle)
 

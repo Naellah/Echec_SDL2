@@ -102,6 +102,12 @@ const TypePiece& Piece :: getType()const{
     return type;
 }
 
+void Piece :: estmangee(){
+    this->couleur = VIDEC;
+    this->type = VIDE;
+    position = {0,0};
+    this->est_vivante = false;
+}
 
 
 void Piece :: devientVide(){

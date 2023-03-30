@@ -32,6 +32,9 @@ class ConfigJeu{
         vector<vector<Piece>> plateau;
         Couleur joueurCourant;
 
+        unsigned int nbPiecesBlanches;
+        unsigned int nbPiecesNoires;
+
     public:
         
         //constructeur par défaut
@@ -77,12 +80,13 @@ class ConfigJeu{
         void afficherCoupsPossibles(const Vec2& pos)const;
 
         //mutateurs du joueur qui joue
-        void setJoueurCourant(const Couleur& _joueurCourant);
+        void setJoueurCourant();
 
         //recupere le vec2 coordonnees selon ses coordonnées lettre et chiffre
         Vec2 recuperePosition(const char& lettre, const char& chiffre)const;
 
 
+        void estMangeConfig(Piece &p);
 
         /*retourne vrai si pour un coup donné, il n'y a pas d'obstacle 
         entre la position de départ et la position d'arrivée et que le coup 

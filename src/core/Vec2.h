@@ -31,6 +31,7 @@ class Vec2{
 
     Vec2 operator+(const Vec2& other) const;
        
+    
 
     Vec2 operator-(const Vec2& other) const;
 
@@ -38,6 +39,8 @@ class Vec2{
        
 
     bool operator==( const Vec2& other)const;
+
+    bool operator!=( const Vec2& other)const;
     
     void setVec2(int a, int _b);
 
