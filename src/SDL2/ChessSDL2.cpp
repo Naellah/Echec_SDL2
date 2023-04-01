@@ -515,7 +515,7 @@ void ChessSDL2::SDL2coupPossibles() {
                         // Affiche les coups possibles en dessinant des carrés bleus
                         coupSDL2 = configJeu.coupsPossibles(Vec2(i, j));
                         afficherPlateauSDL2();
-                        afficherPiecesSDL2();
+                        
                         for (int k = 0; k < coupSDL2.size(); k++) {
                             SDL_Rect recta;
                             recta.x = 57 + 85 * (coupSDL2[k].deplacement.getX() - 1);
@@ -524,6 +524,7 @@ void ChessSDL2::SDL2coupPossibles() {
                             recta.h = 83;
                             carre_bleu.draw(renderer, recta.x, recta.y, recta.h, recta.w);
                         }
+                        afficherPiecesSDL2();
                         SDL_RenderPresent(renderer);
 
                         // Attend le deuxième clic de l'utilisateur pour mettre à jour le plateau
@@ -542,6 +543,8 @@ void ChessSDL2::SDL2coupPossibles() {
                                 break;
                             }
                         }
+                        
+                        
                     }
                 }
             }
@@ -604,9 +607,7 @@ void ChessSDL2::SDL2Boucle() {
     vector <Coup> coupSDL2;
     afficherMenu();
 
-    afficherPlateauSDL2();
-    afficherPiecesSDL2();
-    SDL_RenderPresent(renderer);
+  
 
 
     // Tant que ce n'est pas la fin ...
@@ -651,7 +652,6 @@ void ChessSDL2::SDL2Boucle() {
         afficherPlateauSDL2();
         afficherPiecesSDL2();
         SDL2coupPossibles();
-        configJeu.setJoueurCourant();
         SDL_RenderPresent(renderer);
        // On permute les deux buffers (cette fonction ne doit se faire qu'une seule fois dans la boucle)
 

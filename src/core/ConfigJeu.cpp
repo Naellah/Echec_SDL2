@@ -5,6 +5,7 @@
 #include "Piece.h"
 #include "Vec2.h"
 
+#include <set>
 
 using namespace std;
 
@@ -139,6 +140,12 @@ void ConfigJeu :: initConfigJeu(){
     
 }
 
+
+
+
+
+
+
 vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
     Piece piece_actuelle = getPiece(pos);
     vector <Coup> coupsPossibles;
@@ -156,12 +163,21 @@ vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
             if (piece_actuelle.getCouleur() == Couleur::BLANC) {
 
                 if (piece_actuelle.getPosition().getY() == 7) {
-                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - 2)));
+                    if (getPiece(Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - 1)).getCouleur() == Couleur::VIDEC) {
+                        if (getPiece(Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - 2)).getCouleur() == Couleur::VIDEC) {
+                            coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - 2)));
+                            coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - 1)));
+                        }
+                        else {
+                            coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - 1)));
+                        }
+                    }
+                }
+                else if (getPiece(Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - 1)).getCouleur() == Couleur::VIDEC) {
                     coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - 1)));
                 }
-                else {
-                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - 1)));
-                }
+
+
                 //teste s'il y a un pion adverse en diagonale
                 if (piece_actuelle.getPosition().getX() != 1){
                     if (plateau[piece_actuelle.getPosition().getX() - 1][piece_actuelle.getPosition().getY() - 1].getCouleur() == Couleur::NOIR) {
@@ -177,12 +193,19 @@ vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
             }
 			else if (piece_actuelle.getCouleur() == Couleur::NOIR){
                 
-                if(piece_actuelle.getPosition().getY() == 2){
-                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX(),piece_actuelle.getPosition().getY()+2)));
-                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX(),piece_actuelle.getPosition().getY()+1)));
+                if (piece_actuelle.getPosition().getY() == 2) {
+                    if (getPiece(Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() + 1)).getCouleur() == Couleur::VIDEC) {
+                        if (getPiece(Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() + 2)).getCouleur() == Couleur::VIDEC) {
+                            coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() + 2)));
+                            coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() + 1)));
+                        }
+                        else {
+                            coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() + 1)));
+                        }
+                    }
                 }
-                else{
-                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX(),piece_actuelle.getPosition().getY()+1)));
+                else if (getPiece(Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() + 1)).getCouleur() == Couleur::VIDEC) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() + 1)));
                 }
 
                 //teste s'il y a un pion adverse en diagonale
@@ -281,7 +304,7 @@ vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
            
             coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX()+1,piece_actuelle.getPosition().getY()-1)));
             
-
+            break;
 
         
 
@@ -322,40 +345,132 @@ vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
         /////////////////////DAME/////////////////////////
 
         case TypePiece::DAME:
-            for(int i = 1; i < 9; i++){
-              
-                coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX()+i,piece_actuelle.getPosition().getY()+i)));
-                
-            }
-            for(int i = 1; i < 8; i++){
-                
-                coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX()+i,piece_actuelle.getPosition().getY()-i)));
-                
-            }
-            for(int i = 1; i < 9; i++){
-               
-                coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX()-i,piece_actuelle.getPosition().getY()+i)));
-                
-            }
-            for(int i = 1; i < 9; i++){
-               
-                coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX()-i,piece_actuelle.getPosition().getY()-i)));
-                
-            }
-            for(int i = 1; i < 9; i++){
-               
-                coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(i,piece_actuelle.getPosition().getY())));
-                
-            }
-            for(int i = 1; i < 9; i++){
-                
-                coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX(),i)));
             
+
+            // coup ligne droite 
+
+            int i = 1;
+            while (piece_actuelle.getPosition().getX() - i > 0 ) {
+                if (getPiece(Vec2(piece_actuelle.getPosition().getX() - i, piece_actuelle.getPosition().getY())).getCouleur() == Couleur::VIDEC) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX() - i, piece_actuelle.getPosition().getY())));
+                    i++;
+                }
+                else if (getPiece(Vec2(piece_actuelle.getPosition().getX() - i, piece_actuelle.getPosition().getY())).getCouleur() != piece_actuelle.getCouleur()) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX() - i, piece_actuelle.getPosition().getY())));
+                    break;
+                }
+                else { break; }
             }
+
+            i = 1;
+            while (piece_actuelle.getPosition().getX() + i < 9 ) {
+                if (getPiece(Vec2(piece_actuelle.getPosition().getX() + i, piece_actuelle.getPosition().getY())).getCouleur() == Couleur::VIDEC) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX() + i, piece_actuelle.getPosition().getY())));
+                    i++;
+                }
+                else if (getPiece(Vec2(piece_actuelle.getPosition().getX() + i, piece_actuelle.getPosition().getY())).getCouleur() != piece_actuelle.getCouleur()) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX() + i, piece_actuelle.getPosition().getY())));
+                    break;
+                }
+                else { break; }
+            }
+
+            i = 1;
+            while (piece_actuelle.getPosition().getY() - i > 0 ) {
+                if (getPiece(Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - i)).getCouleur() == Couleur::VIDEC) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - i)));
+                    i++;
+                }
+                else if (getPiece(Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - i)).getCouleur() != piece_actuelle.getCouleur()) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() - i)));
+                    break;
+                }
+                else { break; }
+            }
+
+            i = 1;
+            while (piece_actuelle.getPosition().getY() + i < 9) {
+                if (getPiece(Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() + i)).getCouleur() == Couleur::VIDEC) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() + i)));
+                    i++;
+                }
+                else if (getPiece(Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() + i)).getCouleur() != piece_actuelle.getCouleur()) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX(), piece_actuelle.getPosition().getY() + i)));
+                    break;
+                }
+                else { break; }
+            }
+
+
+
+
+            //diagonale
+
+
+            i = 1;
+            while (piece_actuelle.getPosition().getX() - i > 0 && piece_actuelle.getPosition().getY() - i > 0) {
+                if (getPiece(Vec2(piece_actuelle.getPosition().getX() - i, piece_actuelle.getPosition().getY()-i)).getCouleur() == Couleur::VIDEC) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX() - i, piece_actuelle.getPosition().getY()-i)));
+                    i++;
+                }
+                else if (getPiece(Vec2(piece_actuelle.getPosition().getX() - i, piece_actuelle.getPosition().getY()-i)).getCouleur() != piece_actuelle.getCouleur()) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX() - i, piece_actuelle.getPosition().getY()-i)));
+                    break;
+                }
+                else { break; }
+            }
+
+            i = 1;
+            while (piece_actuelle.getPosition().getX() + i < 9 && piece_actuelle.getPosition().getY() - i > 0) {
+                if (getPiece(Vec2(piece_actuelle.getPosition().getX() + i, piece_actuelle.getPosition().getY() - i)).getCouleur() == Couleur::VIDEC) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX() + i, piece_actuelle.getPosition().getY() - i)));
+                    i++;
+                }
+                else if (getPiece(Vec2(piece_actuelle.getPosition().getX() + i, piece_actuelle.getPosition().getY() - i)).getCouleur() != piece_actuelle.getCouleur()) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX() + i, piece_actuelle.getPosition().getY() - i)));
+                    break;
+                }
+                else { break; }
+            }
+
+
+            i = 1;
+            while (piece_actuelle.getPosition().getX() - i > 0 && piece_actuelle.getPosition().getY() + i < 9) {
+                if (getPiece(Vec2(piece_actuelle.getPosition().getX() - i, piece_actuelle.getPosition().getY() + i)).getCouleur() == Couleur::VIDEC) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX() - i, piece_actuelle.getPosition().getY() + i)));
+                    i++;
+                }
+                else if (getPiece(Vec2(piece_actuelle.getPosition().getX() - i, piece_actuelle.getPosition().getY() + i)).getCouleur() != piece_actuelle.getCouleur()) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX() - i, piece_actuelle.getPosition().getY() + i)));
+                    break;
+                }
+                else { break; }
+            }
+
+            i = 1;
+            while (piece_actuelle.getPosition().getX() + i < 9 && piece_actuelle.getPosition().getY() + i < 9) {
+                if (getPiece(Vec2(piece_actuelle.getPosition().getX() + i, piece_actuelle.getPosition().getY() + i)).getCouleur() == Couleur::VIDEC) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX() + i, piece_actuelle.getPosition().getY() + i)));
+                    i++;
+                }
+                else if (getPiece(Vec2(piece_actuelle.getPosition().getX() + i, piece_actuelle.getPosition().getY() + i)).getCouleur() != piece_actuelle.getCouleur()) {
+                    coupsPossibles.push_back(Coup(piece_actuelle.getPosition(), Vec2(piece_actuelle.getPosition().getX() + i, piece_actuelle.getPosition().getY() + i)));
+                    break;
+                }
+                else { break; }
+
+            }
+
             break;
-        default:
-            break;
+
+           
+        
+       
     }
+
+
+
+
     
     unsigned int i = 0;
     while (i < coupsPossibles.size()) {
@@ -403,13 +518,10 @@ vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
         }
     }
 
-    /*
+    
     switch (piece_actuelle.getType()){
         case CAVALIER1:
         case CAVALIER2:
-            break;
-
-       //tout le reste
         case PION1:
         case PION2:
         case PION3:
@@ -418,61 +530,157 @@ vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
         case PION6:
         case PION7:
         case PION8:
+        case ROI:
+        case DAME:
+            break;
+
+       //tout le reste
+       
         case TOUR1:
         case TOUR2:
-        case FOU1:
-        case FOU2:
-        case DAME:
-        case ROI:
-            i = 0;
-            while (i < coupsPossibles.size())
-            {
-                Vec2 depart = coupsPossibles[i].posi;
-                Vec2 arrivee = coupsPossibles[i].deplacement;
-                int dx = arrivee.getX() > depart.getX() ? 1 : -1;
-                int dy = arrivee.getY() > depart.getY() ? 1 : -1;
-                bool coupValide = true;
-                for (int x = depart.getX() + dx, y = depart.getY() + dy; Vec2(x, y) != arrivee; x += dx, y += dy)
-                {
-                    if (plateau[x][y].getType() != VIDE)
-                    {
-                        coupValide = false;
-                        break;
+            //teste si la tour passe au dessus d'une piece
+            for (unsigned int i = 0; i < coupsPossibles.size(); i++) {
+                if (coupsPossibles[i].posi.getX() == coupsPossibles[i].deplacement.getX()) {
+                    if (coupsPossibles[i].posi.getY() < coupsPossibles[i].deplacement.getY()) {
+                        for (int j = coupsPossibles[i].posi.getY() + 1; j < coupsPossibles[i].deplacement.getY(); j++) {
+                            if (getPiece(Vec2(coupsPossibles[i].posi.getX(), j)).getType() != TypePiece::VIDE) {
+                                coupsPossibles.erase(coupsPossibles.begin() + i);
+                                i--;
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        for (int j = coupsPossibles[i].posi.getY() - 1; j > coupsPossibles[i].deplacement.getY(); j--) {
+                            if (getPiece(Vec2(coupsPossibles[i].posi.getX(), j)).getType() != TypePiece::VIDE) {
+                                coupsPossibles.erase(coupsPossibles.begin() + i);
+                                i--;
+                                break;
+                            }
+                        }
                     }
                 }
-
-                if (!coupValide)
-                {
-                    coupsPossibles.erase(coupsPossibles.begin() + i);
-                }
-                else
-                {
-                    i++;
+                else {
+                    if (coupsPossibles[i].posi.getX() < coupsPossibles[i].deplacement.getX()) {
+                        for (int j = coupsPossibles[i].posi.getX() + 1; j < coupsPossibles[i].deplacement.getX(); j++) {
+                            if (getPiece(Vec2(j, coupsPossibles[i].posi.getY())).getType() != TypePiece::VIDE) {
+                                coupsPossibles.erase(coupsPossibles.begin() + i);
+                                i--;
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        for (int j = coupsPossibles[i].posi.getX() - 1; j > coupsPossibles[i].deplacement.getX(); j--) {
+                            if (getPiece(Vec2(j, coupsPossibles[i].posi.getY())).getType() != TypePiece::VIDE) {
+                                coupsPossibles.erase(coupsPossibles.begin() + i);
+                                i--;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 
-    }	    
-    */
+            break;
+        
+
+
+
+        case FOU1:
+        case FOU2: 
+            //teste si le fou passe au dessus d'une piece
+            
+            for (unsigned int i = 0; i < coupsPossibles.size(); i++) {
+                if (coupsPossibles[i].posi.getX() < coupsPossibles[i].deplacement.getX()) {
+                    if (coupsPossibles[i].posi.getY() < coupsPossibles[i].deplacement.getY()) {
+                        for (int j = coupsPossibles[i].posi.getX() + 1, k = coupsPossibles[i].posi.getY() + 1; j < coupsPossibles[i].deplacement.getX(); j++, k++) {
+                            if (getPiece(Vec2(j, k)).getType() != TypePiece::VIDE) {
+                                coupsPossibles.erase(coupsPossibles.begin() + i);
+                                i--;
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        for (int j = coupsPossibles[i].posi.getX() + 1, k = coupsPossibles[i].posi.getY() - 1; j < coupsPossibles[i].deplacement.getX(); j++, k--) {
+                            if (getPiece(Vec2(j, k)).getType() != TypePiece::VIDE) {
+                                coupsPossibles.erase(coupsPossibles.begin() + i);
+                                i--;
+                                break;
+                            }
+                        }
+                    }
+                }
+                else {
+                    if (coupsPossibles[i].posi.getY() < coupsPossibles[i].deplacement.getY()) {
+                        for (int j = coupsPossibles[i].posi.getX() - 1, k = coupsPossibles[i].posi.getY() + 1; j > coupsPossibles[i].deplacement.getX(); j--, k++) {
+                            if (getPiece(Vec2(j, k)).getType() != TypePiece::VIDE) {
+                                coupsPossibles.erase(coupsPossibles.begin() + i);
+                                i--;
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        for (int j = coupsPossibles[i].posi.getX() - 1, k = coupsPossibles[i].posi.getY() - 1; j > coupsPossibles[i].deplacement.getX(); j--, k--) {
+                            if (getPiece(Vec2(j, k)).getType() != TypePiece::VIDE) {
+                                coupsPossibles.erase(coupsPossibles.begin() + i);
+                                i--;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            break;
+
+        default:
+			break;
+
+    }
     
+    
+    
+    
+    
+   
+    
+    
+    system("cls");
+    std :: cout << piece_actuelle.getType() << endl;
+
+    // affiche les coups pour debug
+    for (unsigned int i = 0; i < coupsPossibles.size(); i++) {
+		std :: cout << "Coup possible : "  << coupsPossibles[i].deplacement.getX() << " " << coupsPossibles[i].deplacement.getY() << endl;
+	}
+
     return coupsPossibles;
 }
  
+
+
+
 void ConfigJeu :: afficherCoupsPossibles(const Vec2& pos_actuelle)const{
     vector<Coup> cpos = coupsPossibles(pos_actuelle);
     if (cpos.size()==0){
-        cout << "Aucun coup possible" << endl;
+        std :: cout << "Aucun coup possible" << endl;
         return;
     }
     for(long unsigned int i=0; i<cpos.size(); i++){
         if (i==1){
-            cout << "1er coup possible:" << endl;
+            std :: cout << "1er coup possible:" << endl;
         }else 
         {
-            cout << i << "eme coup possible:" << endl;
+            std :: cout << i << "eme coup possible:" << endl;
         }
-        cout<<"("<<cpos[i].posi.getX()<<","<<cpos[i].posi.getY()<<") -> ("<<cpos[i].deplacement.getX()<<","<<cpos[i].deplacement.getY()<<")"<<endl;
+        std :: cout<<"("<<cpos[i].posi.getX()<<","<<cpos[i].posi.getY()<<") -> ("<<cpos[i].deplacement.getX()<<","<<cpos[i].deplacement.getY()<<")"<<endl;
     }
 }
+
+
+
+
 
 string ConfigJeu :: JoueurCourant()const{
     if (joueurCourant == Couleur::BLANC){
@@ -483,6 +691,9 @@ string ConfigJeu :: JoueurCourant()const{
     }
 }
 
+
+
+
 void ConfigJeu :: jouerCoup(const Coup & c){
     Coup cnew(c.posi, c.deplacement);
     cnew.posi.setX(c.posi.getX() + c.deplacement.getX());
@@ -490,6 +701,9 @@ void ConfigJeu :: jouerCoup(const Coup & c){
     Piece tempo=getPiece(c.posi);
     tempo.setPosition(cnew.posi);
 }
+
+
+
 
 const Piece& ConfigJeu :: getPiece(const Vec2& pos)const{
     int a,b;
@@ -505,12 +719,123 @@ const Piece& ConfigJeu :: getPiece(const Vec2& pos)const{
     return plateau[a][b];
 }
 
+
+
+
+
+
+bool ConfigJeu::EchecBlanc()const {
+    // parcours le tableau en donnant les coups donnés pour chaque pièce et si chaque coup donné donnera avec getPiece sur le Roi
+    // Si un coup donne sur le roi alors on retourne true
+    // Sinon on retourne false
+    for (int i = 1; i < 9; i++) {
+        for (int j = 1; j < 9; j++) {
+            if (getPiece(Vec2(i, j)).getType() != TypePiece::VIDE) {
+                vector<Coup> cpos = coupsPossibles(Vec2(i, j));
+                for (unsigned int k = 0; k < cpos.size(); k++) {
+                    if (getPiece(cpos[k].deplacement).getType() == TypePiece::ROI && getPiece(cpos[k].deplacement).getCouleur() == Couleur::BLANC) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
+
+bool ConfigJeu::EchecNoir()const {
+    // parcours le tableau en donnant les coups donnés pour chaque pièce et si chaque coup donné donnera avec getPiece sur le Roi
+    // Si un coup donne sur le roi alors on retourne true
+    // Sinon on retourne false
+    for (int i = 1; i < 9; i++) {
+        for (int j = 1; j < 9; j++) {
+            if (getPiece(Vec2(i, j)).getType() != TypePiece::VIDE) {
+                vector<Coup> cpos = coupsPossibles(Vec2(i, j));
+                for (unsigned int k = 0; k < cpos.size(); k++) {
+                    if (getPiece(cpos[k].deplacement).getType() == TypePiece::ROI && getPiece(cpos[k].deplacement).getCouleur() == Couleur::NOIR) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
+
+
+bool ConfigJeu::EchecEtMatBlanc()const {
+	// Si le roi est en échec et que aucun coup ne permet de le sauver alors on retourne true
+	// Sinon on retourne false
+    vector <Coup> coupechec;
+    if (EchecBlanc()) {
+        
+        vector <Coup> echecmat;
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                if (getPiece(Vec2(i, j)).getType() == TypePiece::ROI && getPiece(Vec2(i, j)).getCouleur() == Couleur::BLANC){
+                    vector <Coup> coupechec = coupsPossibles(Vec2(i, j));
+                    //test poye chaque coup possible si le roi est en echec
+                    for (unsigned int k = 0; k < coupechec.size(); k++) {
+                        for (int l = 1; l < 9; l++) {
+                            for (int m = 1; m < 9; m++) {
+                               if (getPiece(Vec2(l, m)).getCouleur() == Couleur::NOIR) {
+                                    vector <Coup> coupechec2 = coupsPossibles(Vec2(l, m));
+                                    for (unsigned int n = 0; n < coupechec2.size(); n++) {
+                                        if (coupechec2[n].deplacement.getX() == coupechec[k].posi.getX() && coupechec2[n].deplacement.getY() == coupechec[k].posi.getY()) {
+                                            echecmat.push_back(coupechec[k]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                   
+				}
+			}
+		}
+		//test si echecmat est égale a coupechec en comparan les coordonnées
+        // Étape 1: créer un set de Coup
+        set<Coup> coups_uniques;
+
+        // Étape 2: parcourir chaque vecteur de Coup et insérer chaque élément dans le set
+        for (const auto& v : echecmat) {
+            coups_uniques.insert(v);    
+        }
+
+        // Étape 3: convertir le set en un nouveau vector de Coup unique
+        vector<Coup> echecmat_unique(coups_uniques.begin(), coups_uniques.end());
+        if (echecmat_unique.size() == coupechec.size()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+	else {
+        return false;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 void ConfigJeu :: afficherPlateauTxt()const{
      for (int i = 1 ; i<9; i++){
         //met en couleur verte les indices de colonnes
-        cout << "\033[32;10m" << i << "\033[0m";
+        std :: cout << "\033[32;10m" << i << "\033[0m";
         for (int j = 1; j < 9; j++){
-            cout << " "<< " " ;
+            std :: cout << " "<< " " ;
             switch(plateau[j][i].getCouleur()){
                 
                 case Couleur::BLANC:
@@ -525,30 +850,30 @@ void ConfigJeu :: afficherPlateauTxt()const{
                         case TypePiece::PION6:
                         case TypePiece::PION7:
                         case TypePiece::PION8:
-                            cout <<setw(2)<<  "\033[34;10mP\033[0m" << " ";
+                            std :: cout <<setw(2)<<  "\033[34;10mP\033[0m" << " ";
                             break;
 
                         case TypePiece::TOUR1:
                         case TypePiece::TOUR2:
-                            cout <<setw(2)<<  "\033[34;10mT\033[0m" << " ";
+                            std :: cout <<setw(2)<<  "\033[34;10mT\033[0m" << " ";
                             break;
                         
                         case TypePiece::CAVALIER1:
                         case TypePiece::CAVALIER2:
-                            cout <<setw(2)<<  "\033[34;10mC\033[0m" << " ";
+                            std :: cout <<setw(2)<<  "\033[34;10mC\033[0m" << " ";
                             break;
                         
                         case TypePiece::FOU1:
                         case TypePiece::FOU2:
-                            cout <<setw(2)<<  "\033[34;10mF\033[0m" << " ";
+                            std :: cout <<setw(2)<<  "\033[34;10mF\033[0m" << " ";
                             break;
                         
                         case TypePiece::DAME:
-                            cout <<setw(2)<<  "\033[34;10mD\033[0m" << " ";
+                            std :: cout <<setw(2)<<  "\033[34;10mD\033[0m" << " ";
                             break;
                         
                         case TypePiece::ROI:
-                            cout <<setw(2)<<  "\033[34;10mR\033[0m" << " ";
+                            std :: cout <<setw(2)<<  "\033[34;10mR\033[0m" << " ";
                             break;
             
 
@@ -569,30 +894,30 @@ void ConfigJeu :: afficherPlateauTxt()const{
                         case TypePiece::PION6:
                         case TypePiece::PION7:
                         case TypePiece::PION8:
-                            cout <<setw(2)<<  "\033[31;10mP\033[0m" << " ";
+                            std :: cout <<setw(2)<<  "\033[31;10mP\033[0m" << " ";
                             break;
 
                         case TypePiece::TOUR1:
                         case TypePiece::TOUR2:
-                            cout <<setw(2)<<  "\033[31;10mT\033[0m" << " ";
+                            std :: cout <<setw(2)<<  "\033[31;10mT\033[0m" << " ";
                             break;
                         
                         case TypePiece::CAVALIER1:
                         case TypePiece::CAVALIER2:
-                            cout <<setw(2)<<  "\033[31;10mC\033[0m" << " ";
+                            std :: cout <<setw(2)<<  "\033[31;10mC\033[0m" << " ";
                             break;
                         
                         case TypePiece::FOU1:
                         case TypePiece::FOU2:
-                            cout <<setw(2)<<  "\033[31;10mF\033[0m" << " ";
+                            std :: cout <<setw(2)<<  "\033[31;10mF\033[0m" << " ";
                             break;
                         
                         case TypePiece::DAME:
-                            cout <<setw(2)<<  "\033[31;10mD\033[0m" << " ";
+                            std :: cout <<setw(2)<<  "\033[31;10mD\033[0m" << " ";
                             break;
                         
                         case TypePiece::ROI:
-                            cout <<setw(2)<<  "\033[31;10mR\033[0m" << " ";
+                            std :: cout <<setw(2)<<  "\033[31;10mR\033[0m" << " ";
                             break;
                         
                         default:
@@ -603,19 +928,22 @@ void ConfigJeu :: afficherPlateauTxt()const{
                 
 
                 case Couleur::VIDEC:
-                    cout << "*" << " ";
+                    std :: cout << "*" << " ";
                     break;
                 
             }          
         }
-        cout << endl;
+        std :: cout << endl;
     }
-    cout << endl ;
-    cout << " "<< " " << " ";
+    std :: cout << endl ;
+    std :: cout << " "<< " " << " ";
     //on affiche les indices de lignes en vert
-    cout << "\033[32;10mA\033[0m" << " " << " "<<" " << "\033[32;10mB\033[0m" << " " << " " << " "<< "\033[32;10mC\033[0m" << " " << " " << " "<< "\033[32;10mD\033[0m" << " " << " " << " "<< "\033[32;10mE\033[0m" << " " << " " << " "<< "\033[32;10mF\033[0m" << " " << " " << " "<< "\033[32;10mG\033[0m" << " " << " " << " "<< "\033[32;10mH\033[0m" << " " << " " << " "<< endl;
-    cout << endl << endl;
+    std :: cout << "\033[32;10mA\033[0m" << " " << " "<<" " << "\033[32;10mB\033[0m" << " " << " " << " "<< "\033[32;10mC\033[0m" << " " << " " << " "<< "\033[32;10mD\033[0m" << " " << " " << " "<< "\033[32;10mE\033[0m" << " " << " " << " "<< "\033[32;10mF\033[0m" << " " << " " << " "<< "\033[32;10mG\033[0m" << " " << " " << " "<< "\033[32;10mH\033[0m" << " " << " " << " "<< endl;
+    std :: cout << endl << endl;
 }
+
+
+
 
 Vec2 ConfigJeu :: recuperePosition(const char& lettre, const char& chiffre)const{
     int x = lettre - 'a'+1;
@@ -625,13 +953,15 @@ Vec2 ConfigJeu :: recuperePosition(const char& lettre, const char& chiffre)const
     return pos;
 }
 
+
+
 void ConfigJeu :: deplacePiece(const Coup& c){
     estMangeConfig(plateau[c.deplacement.getX()][c.deplacement.getY()]);
     plateau[c.deplacement.getX()][c.deplacement.getY()] = plateau[c.posi.getX()][c.posi.getY()];
     plateau[c.deplacement.getX()][c.deplacement.getY()].setPosition(c.deplacement);
     plateau[c.posi.getX()][c.posi.getY()] = Piece(Couleur::VIDEC,TypePiece::VIDE,Vec2(c.posi.getX(),c.posi.getY()));
+    setJoueurCourant();
 }
-
 
 
 
@@ -641,9 +971,11 @@ const vector<vector<Piece>>& ConfigJeu :: getPlateau()const{
     return this->plateau;
 }
 
+
 const Couleur& ConfigJeu :: getJoueurCourant()const{
     return this->joueurCourant;
 }
+
 
 void ConfigJeu :: setJoueurCourant(){
     if (this->joueurCourant == Couleur::BLANC) {
@@ -653,6 +985,8 @@ void ConfigJeu :: setJoueurCourant(){
 		this->joueurCourant = Couleur::BLANC;
 	}
 }
+
+
 
 void ConfigJeu :: estMangeConfig(Piece &p){
     if (p.getCouleur() == Couleur::BLANC) {
@@ -670,7 +1004,7 @@ void ConfigJeu :: estMangeConfig(Piece &p){
 
 
 void ConfigJeu :: testRegressionConfigJeu()const{
-    cout<<"testRegressionConfigJeu"<<endl;
+    std :: cout<<"testRegressionConfigJeu"<<endl;
     ConfigJeu c;
     c.initConfigJeu();
 
@@ -774,7 +1108,7 @@ void ConfigJeu :: testRegressionConfigJeu()const{
         }
 
     }
-    cout << "assertions ok" << endl;
+    std :: cout << "assertions ok" << endl;
 
 
 
@@ -784,9 +1118,9 @@ void ConfigJeu :: testRegressionConfigJeu()const{
         for (int j = 0; j < 10; j++)
         {
  
-        cout<<setw(2)<<c.plateau[i][j].getType()<<" ";
+        std :: cout<<setw(2)<<c.plateau[i][j].getType()<<" ";
         }
-        cout<<endl;
+        std :: cout<<endl;
     }
 
     //test si les cases vides sont bien nulles
@@ -804,7 +1138,7 @@ void ConfigJeu :: testRegressionConfigJeu()const{
         }
     }
 
-    cout << "test d'initalisation du plateau OK" << endl;
+    std :: cout << "test d'initalisation du plateau OK" << endl;
 
     //Test des CoupsPossibles
     //test des pions
@@ -820,15 +1154,12 @@ void ConfigJeu :: testRegressionConfigJeu()const{
         }
     }
 
-    cout << "pas de probleme avec les coups possibles des pions noirs" << endl;
+    std :: cout << "pas de probleme avec les coups possibles des pions noirs" << endl;
 
     //test des tours noirs du plateau
     //vector <Coup> coupsToursNoirs = coupsPossibles(c.plateau[1][1].getPosition());
 
     
 
-
-
-   
     
 }

@@ -13,17 +13,25 @@ using namespace std;
 
 
 
-struct Coup{
+struct Coup {
     Vec2 posi;
     Vec2 deplacement;
-    //constructeur par défaut
-    Coup();
-    //constructeur
-    Coup(Vec2 _pos, Vec2 _dep){
-        posi= _pos;
-        deplacement=_dep;
-    };
+    
+    // constructeur par défaut
+    Coup() {}
+    
+    // constructeur
+    Coup(Vec2 _pos, Vec2 _dep) {
+        posi = _pos;
+        deplacement = _dep;
+    }
+    
+    // opérateur d'égalité
+    bool operator==(const Coup& other) const {
+        return posi == other.posi && deplacement == other.deplacement;
+    }
 };
+
 
 class ConfigJeu{
     private:
@@ -87,6 +95,17 @@ class ConfigJeu{
 
 
         void estMangeConfig(Piece &p);
+
+
+        bool EchecBlanc()const;
+
+        bool EchecNoir()const;
+
+        bool EchecEtMatBlanc()const;
+
+        bool EchecEtMatNoir()const;
+
+
 
         /*retourne vrai si pour un coup donné, il n'y a pas d'obstacle 
         entre la position de départ et la position d'arrivée et que le coup 
