@@ -642,11 +642,6 @@ vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
     
     
     
-    
-    
-   
-    
-    
     system("cls");
     std :: cout << piece_actuelle.getType() << endl;
 
@@ -765,6 +760,8 @@ bool ConfigJeu::EchecNoir()const {
 
 
 
+
+
 bool ConfigJeu::EchecEtMatBlanc()const {
 	// Si le roi est en échec et que aucun coup ne permet de le sauver alors on retourne true
 	// Sinon on retourne false
@@ -819,10 +816,59 @@ bool ConfigJeu::EchecEtMatBlanc()const {
 }
 
 
+bool ConfigJeu::EchecEtMatNoir()const {
+    // Si le roi est en échec et que aucun coup ne permet de le sauver alors on retourne true
+    // Sinon on retourne false
+    vector <Coup> coupechec;
+    if (EchecNoir()) {
+        
+        vector <Coup> echecmat;
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                if (getPiece(Vec2(i, j)).getType() == TypePiece::ROI && getPiece(Vec2(i, j)).getCouleur() == Couleur::NOIR){
+                    vector <Coup> coupechec = coupsPossibles(Vec2(i, j));
+                    //test poye chaque coup possible si le roi est en echec
+                    for (unsigned int k = 0; k < coupechec.size(); k++) {
+                        for (int l = 1; l < 9; l++) {
+                            for (int m = 1; m < 9; m++) {
+                               if (getPiece(Vec2(l, m)).getCouleur() == Couleur::BLANC) {
+                                    vector <Coup> coupechec2 = coupsPossibles(Vec2(l, m));
+                                    for (unsigned int n = 0; n < coupechec2.size(); n++) {
+                                        if (coupechec2[n].deplacement.getX() == coupechec[k].posi.getX() && coupechec2[n].deplacement.getY() == coupechec[k].posi.getY()) {
+                                            echecmat.push_back(coupechec[k]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                   
+                }
+            }
+        }
+        //test si echecmat est égale a coupechec en comparan les coordonnées
+        // Étape 1: créer un set de Coup
+        set<Coup> coups_uniques;
 
+        // Étape 2: parcourir chaque vecteur de Coup et insérer chaque élément dans le set
+        for (const auto& v : echecmat) {
+            coups_uniques.insert(v);    
+        }
 
+        // Étape 3: convertir le set en un nouveau vector de Coup unique
+        vector<Coup> echecmat_unique(coups_uniques.begin(), coups_uniques.end());
+        if (echecmat_unique.size() == coupechec.size()) {
+            return true;
+        }
+        else {
+            return false;
+        }
 
-
+    }
+    else {
+        return false;
+    }
+}
 
 
 
