@@ -19,6 +19,7 @@ ConfigJeu :: ConfigJeu(){
     joueurCourant = Couleur::BLANC;
     nbPiecesBlanches = 16;
     nbPiecesNoires = 16;
+    tour = 1;
 }
   
 ConfigJeu :: ~ConfigJeu(){
@@ -210,18 +211,19 @@ vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
 
                 //teste s'il y a un pion adverse en diagonale
                 if (piece_actuelle.getPosition().getX() != 8) {
-                    if (plateau[piece_actuelle.getPosition().getX() + 1][piece_actuelle.getPosition().getY()].getCouleur() == Couleur::BLANC) {
+                    if (plateau[piece_actuelle.getPosition().getX() + 1][piece_actuelle.getPosition().getY()+1].getCouleur() == Couleur::BLANC) {
 						coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX()+1,piece_actuelle.getPosition().getY()+1)));
 					}
                 
                 }
                 if (piece_actuelle.getPosition().getX() != 1) {
-                    if (plateau[piece_actuelle.getPosition().getX() - 1][piece_actuelle.getPosition().getY()].getCouleur() == Couleur::BLANC) {
+                    if (plateau[piece_actuelle.getPosition().getX() - 1][piece_actuelle.getPosition().getY()+1].getCouleur() == Couleur::BLANC) {
 							coupsPossibles.push_back(Coup(piece_actuelle.getPosition(),Vec2(piece_actuelle.getPosition().getX()-1,piece_actuelle.getPosition().getY()+1)));
 					}
 				}
 				
             }
+            
 
             break;
 
@@ -641,14 +643,14 @@ vector <Coup> ConfigJeu :: coupsPossibles(const Vec2& pos)const{
     }
     
     
-    
+    /*
     system("cls");
     std :: cout << piece_actuelle.getType() << endl;
 
     // affiche les coups pour debug
     for (unsigned int i = 0; i < coupsPossibles.size(); i++) {
 		std :: cout << "Coup possible : "  << coupsPossibles[i].deplacement.getX() << " " << coupsPossibles[i].deplacement.getY() << endl;
-	}
+	}*/
 
     return coupsPossibles;
 }
@@ -677,7 +679,7 @@ void ConfigJeu :: afficherCoupsPossibles(const Vec2& pos_actuelle)const{
 
 
 
-string ConfigJeu :: JoueurCourant()const{
+string ConfigJeu :: JoueurCourantstr()const{
     if (joueurCourant == Couleur::BLANC){
         return "C'est au joueur blanc de jouer";
     }
@@ -763,112 +765,54 @@ bool ConfigJeu::EchecNoir()const {
 
 
 bool ConfigJeu::EchecEtMatBlanc()const {
-	// Si le roi est en échec et que aucun coup ne permet de le sauver alors on retourne true
-	// Sinon on retourne false
-    vector <Coup> coupechec;
-    if (EchecBlanc()) {
-        
-        vector <Coup> echecmat;
-        for (int i = 1; i < 9; i++) {
-            for (int j = 1; j < 9; j++) {
-                if (getPiece(Vec2(i, j)).getType() == TypePiece::ROI && getPiece(Vec2(i, j)).getCouleur() == Couleur::BLANC){
-                    vector <Coup> coupechec = coupsPossibles(Vec2(i, j));
-                    //test poye chaque coup possible si le roi est en echec
-                    for (unsigned int k = 0; k < coupechec.size(); k++) {
-                        for (int l = 1; l < 9; l++) {
-                            for (int m = 1; m < 9; m++) {
-                               if (getPiece(Vec2(l, m)).getCouleur() == Couleur::NOIR) {
-                                    vector <Coup> coupechec2 = coupsPossibles(Vec2(l, m));
-                                    for (unsigned int n = 0; n < coupechec2.size(); n++) {
-                                        if (coupechec2[n].deplacement.getX() == coupechec[k].posi.getX() && coupechec2[n].deplacement.getY() == coupechec[k].posi.getY()) {
-                                            echecmat.push_back(coupechec[k]);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                   
-				}
-			}
-		}
-		//test si echecmat est égale a coupechec en comparan les coordonnées
-        // Étape 1: créer un set de Coup
-        set<Coup> coups_uniques;
-
-        // Étape 2: parcourir chaque vecteur de Coup et insérer chaque élément dans le set
-        for (const auto& v : echecmat) {
-            coups_uniques.insert(v);    
-        }
-
-        // Étape 3: convertir le set en un nouveau vector de Coup unique
-        vector<Coup> echecmat_unique(coups_uniques.begin(), coups_uniques.end());
-        if (echecmat_unique.size() == coupechec.size()) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-	else {
-        return false;
-    }
-}
-
-
-bool ConfigJeu::EchecEtMatNoir()const {
     // Si le roi est en échec et que aucun coup ne permet de le sauver alors on retourne true
     // Sinon on retourne false
-    vector <Coup> coupechec;
-    if (EchecNoir()) {
-        
-        vector <Coup> echecmat;
-        for (int i = 1; i < 9; i++) {
-            for (int j = 1; j < 9; j++) {
-                if (getPiece(Vec2(i, j)).getType() == TypePiece::ROI && getPiece(Vec2(i, j)).getCouleur() == Couleur::NOIR){
-                    vector <Coup> coupechec = coupsPossibles(Vec2(i, j));
-                    //test poye chaque coup possible si le roi est en echec
-                    for (unsigned int k = 0; k < coupechec.size(); k++) {
-                        for (int l = 1; l < 9; l++) {
-                            for (int m = 1; m < 9; m++) {
-                               if (getPiece(Vec2(l, m)).getCouleur() == Couleur::BLANC) {
-                                    vector <Coup> coupechec2 = coupsPossibles(Vec2(l, m));
-                                    for (unsigned int n = 0; n < coupechec2.size(); n++) {
-                                        if (coupechec2[n].deplacement.getX() == coupechec[k].posi.getX() && coupechec2[n].deplacement.getY() == coupechec[k].posi.getY()) {
-                                            echecmat.push_back(coupechec[k]);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                   
-                }
-            }
-        }
-        //test si echecmat est égale a coupechec en comparan les coordonnées
-        // Étape 1: créer un set de Coup
-        set<Coup> coups_uniques;
-
-        // Étape 2: parcourir chaque vecteur de Coup et insérer chaque élément dans le set
-        for (const auto& v : echecmat) {
-            coups_uniques.insert(v);    
-        }
-
-        // Étape 3: convertir le set en un nouveau vector de Coup unique
-        vector<Coup> echecmat_unique(coups_uniques.begin(), coups_uniques.end());
-        if (echecmat_unique.size() == coupechec.size()) {
+    if (joueurCourant == Couleur :: NOIR)
+        if (EchecBlanc() == true) {
             return true;
         }
-        else {
-            return false;
-        }
-
-    }
-    else {
-        return false;
-    }
+    return false;
 }
+
+bool ConfigJeu::EchecEtMatNoir()const {
+	// Si le roi est en échec et que aucun coup ne permet de le sauver alors on retourne true
+	// Sinon on retourne false
+	if (joueurCourant == Couleur :: BLANC)
+        if (EchecNoir() == true) {
+            return true;
+        }
+	return false;
+}
+
+
+
+
+
+void ConfigJeu::Echecall()const {
+    // affiche tous les echecs et echecs et mat
+    system("cls");
+    
+    if (this->EchecBlanc()==true) {
+        cout << "Echec du Roi blanc" << endl;
+        
+    }
+    if (this->EchecEtMatBlanc()==true) {
+        cout << "Echec et mat du Roi blanc" << endl;
+    }
+
+    if (this->EchecNoir()==true) {
+		cout << "Echec du Roi noir" << endl;
+	}
+
+    if (this->EchecEtMatNoir()==true) {
+		cout << "Echec et mat du Roi noir" << endl;
+	}
+
+}
+
+
+
+
 
 
 

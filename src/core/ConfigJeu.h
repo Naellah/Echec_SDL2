@@ -30,6 +30,15 @@ struct Coup {
     bool operator==(const Coup& other) const {
         return posi == other.posi && deplacement == other.deplacement;
     }
+    // operateur inferieur
+    bool operator<(const Coup& other) const {
+        if (posi.getX() < other.posi.getX())
+            return true;
+        else if (posi.getX() > other.posi.getX())
+            return false;
+        else
+            return posi.getY() < other.posi.getY();
+    }
 };
 
 
@@ -40,6 +49,7 @@ class ConfigJeu{
         vector<vector<Piece>> plateau;
         Couleur joueurCourant;
 
+        unsigned int tour;
         unsigned int nbPiecesBlanches;
         unsigned int nbPiecesNoires;
 
@@ -80,7 +90,7 @@ class ConfigJeu{
         //assesseurs du joueur courant
         const Couleur& getJoueurCourant()const;
 
-        string JoueurCourant()const;
+        string JoueurCourantstr()const;
 
         //affiche le plateau en mettant en rouge les pieces noires et en bleu les pieces blanches et des étoiles pour les cases vides
         void afficherPlateauTxt()const;
@@ -105,7 +115,7 @@ class ConfigJeu{
 
         bool EchecEtMatNoir()const;
 
-
+        void Echecall()const;
 
         /*retourne vrai si pour un coup donné, il n'y a pas d'obstacle 
         entre la position de départ et la position d'arrivée et que le coup 

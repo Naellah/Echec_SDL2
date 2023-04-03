@@ -7,6 +7,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 
 #include <iostream>
 #include "../core/Chrono.h"
@@ -60,6 +61,15 @@ class ChessSDL2{
         SDL_Surface* surface;
         TTF_Font* font; 
         SDL_Texture* texture;
+        bool partie = true;
+
+        Mix_Chunk* piece_sound;
+        Mix_Chunk* echec_blanc;
+        Mix_Chunk* echec_blanc_mat;
+        Mix_Chunk* echec_noir;
+        Mix_Chunk* echec_noir_mat;
+
+        bool withSound;
         ConfigJeu configJeu;
         
         Image pionNoire ;
@@ -77,6 +87,7 @@ class ChessSDL2{
         Image plateauImage ;
         Image ChessBackground;
         Image carre_bleu;
+        Image carre_vert;
 
 
         Joueur joueur1;
@@ -110,6 +121,15 @@ class ChessSDL2{
 
     void drawText(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, int x, int y);
 
+    void drawTextBleu(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, int x, int y);
+
+    void drawNom();
+
+    void drawVainqueur();
+
+    string saisirTexte(SDL_Renderer* renderer, TTF_Font* font, const std::string& message);
+
+
 
         //affiche toutes les pieces
     void afficherPiecesSDL2();
@@ -118,6 +138,9 @@ class ChessSDL2{
 
     void afficherChrono(const Joueur& j);
 
+    void saisirNomsJoueurs();
+
+    void echecAllSDL2();
 
     void SDL2coupPossibles();
 

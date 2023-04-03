@@ -20,9 +20,7 @@
 
 
 int main() {
-    cout << "Bienvenue dans le jeu d'échec" << endl;
     ChessSDL2 jeu;
-    cout << "Initialisation de la fenêtre" << endl;
     jeu.SDL2Boucle();
     
     
