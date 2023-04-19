@@ -5,41 +5,105 @@
 class Chrono {
 
 public:
-    Chrono(); // initialisation à 0
+    /**
+    * @brief initialisation à 0
+    */
+    Chrono();
 
-    void start(); // démarrer le chrono
+    /**
+    * @brief démarrer le chrono
+    */
+    void start();
 
-    void pause(); // mettre en pause le chrono
+    /**
+    * @brief mettre en pause le chrono
+    */
+    void pause();
 
-    void resume(); // reprendre le chrono après une pause
+    /**
+    * @brief reprendre le chrono après une pause
+    */
+    void resume();
 
-    void reset(); // remettre le chrono à 0
+    /**
+    * @brief remettre le chrono à 0
+    */
+    void reset();
 
-    void setTime(unsigned int hours, unsigned int minutes, unsigned int seconds); // initialiser le chrono avec un temps donné
+    /**
+    * @brief initialiser le chrono avec un temps donné
+      @param hours : correspond aux heures du chrono
+      @param minutes : correspond aux minutes du chrono
+      @param seconds : correspond aux secondes du chrono
+    */
+    void setTime(unsigned int hours, unsigned int minutes, unsigned int seconds);
 
-    void ajouterTemps(unsigned int hours, unsigned int minutes, unsigned int seconds); // ajouter du temps au chrono
+    /**
+    * @brief ajouter du temps au chrono
+      @param hours : correspond aux heures ajoute au chrono
+      @param minutes : correspond aux minutes ajoute au chrono
+      @param seconds : correspond aux secondes ajoute au chrono
+    */
+    void ajouterTemps(unsigned int hours, unsigned int minutes, unsigned int seconds);
 
-    void retirerTemps(unsigned int hours, unsigned int minutes, unsigned int seconds); // retirer du temps au chrono
+    /**
+    * @brief retirer du temps au chrono
+      @param hours : correspond aux heures enleve au chrono
+      @param minutes : correspond aux minutes enleve au chrono
+      @param seconds : correspond aux secondes enleve au chrono
+    */
+    void retirerTemps(unsigned int hours, unsigned int minutes, unsigned int seconds);
 
-    void mettreAJour(); // mettre à jour le temps du chrono en fonction du temps écoulé depuis la dernière mise à jour
+    /**
+    * @brief mettre à jour le temps du chrono en fonction du temps écoulé depuis la dernière mise à jour
+    */
+    void mettreAJour();
 
-    unsigned int getHeures() const; // obtenir le nombre d'heures écoulées depuis le début du chrono
+    /**
+    * @brief obtenir le nombre d'heures écoulées depuis le début du chrono
+    */
+    unsigned int getHeures() const;
 
-    unsigned int getMinutes() const; // obtenir le nombre de minutes écoulées depuis le début du chrono
+    /**
+    * @brief obtenir le nombre de minutes écoulées depuis le début du chrono
+    */
+    unsigned int getMinutes() const;
 
-    unsigned int getSecondes() const; // obtenir le nombre de secondes écoulées depuis le début du chrono
+    /**
+    * @brief obtenir le nombre de secondes écoulées depuis le début du chrono
+    */
+    unsigned int getSecondes() const;
 
 
 private:
+    /**
+    * @brief vrai si le chrono est en pause, faux sinon
+    */
+    bool m_enPause;
+    /**
+    * @brief  temps de départ du chrono
+    */
+    std::chrono::system_clock::time_point m_timeStart;
+    /**
+    * @brief temps de la dernière mise en pause du chrono
+    */
+    std::chrono::system_clock::time_point m_timePause;
+    /**
+    * @brief durée totale des pauses du chrono
+    */
+    std::chrono::duration<unsigned int> m_dureePause;
 
-    bool m_enPause; // vrai si le chrono est en pause, faux sinon
-
-    
-    std::chrono::system_clock::time_point m_timeStart; // temps de départ du chrono
-    std::chrono::system_clock::time_point m_timePause; // temps de la dernière mise en pause du chrono
-    std::chrono::duration<unsigned int> m_dureePause; // durée totale des pauses du chrono
-
-    unsigned int m_tempsHeures; // nombre d'heures écoulées depuis le début du chrono
-    unsigned int m_tempsMinutes; // nombre de minutes écoulées depuis le début du chrono
-    unsigned int m_tempsSecondes; // nombre de secondes écoulées depuis le début du chrono
+    /**
+    * @brief  nombre d'heures écoulées depuis le début du chrono
+    */
+    unsigned int m_tempsHeures;
+    /**
+    * @brief nombre de minutes écoulées depuis le début du chrono
+    */
+    unsigned int m_tempsMinutes;
+    /**
+    * @brief nombre de secondes écoulées depuis le début du chrono
+    */
+    unsigned int m_tempsSecondes;
 };
+
