@@ -373,12 +373,16 @@ void ChessSDL2::afficherMenu()
                     {
                         //cout << "Jouer" << endl;
                         running = false;
+                        nb_joueur = 1;
+                        
                      
                     }
                     else if (x >= 300 && x <= 600 && y >= 280 && y <= 320)
                     {
-                        cout << "Charger Partie" << endl;
+                        //cout << "Partie duo" << endl;
                         // Charger Partie pas encore fait 
+                        running = false;
+                        nb_joueur = 2;
                     }
                     else if (x >= 300 && x <= 600 && y >= 380 && y <= 420)
                     {
@@ -414,8 +418,8 @@ void ChessSDL2::afficherMenu()
         ChessBackground.draw(renderer, 0, 0, 844, 793);
 
         // Dessine le texte des options du menu
-        drawText(renderer, font, "Jouer", 300, 200);
-        drawText(renderer, font, "Charger Partie", 300, 300);
+        drawText(renderer, font, "Partie Solo", 300, 200);
+        drawText(renderer, font, "Partie Duo", 300, 300);
         drawText(renderer, font, "Parametres", 300, 400);
         drawText(renderer, font, "Quitter", 300, 500);
 
@@ -791,6 +795,95 @@ void ChessSDL2::saisirNomsJoueurs() {
 
 
 
+
+
+void ChessSDL2::saisirNomJoueur() {
+    string input_text;
+    bool quit = false;
+
+    // Activation de l'entrée de texte SDL
+    SDL_StartTextInput();
+
+    // Texte d'affichage
+    string message1 = "Saissisez votre nom et appuyez sur Entree";
+
+    // Boucle de saisie pour les deux joueurs
+    // Définir le message d'affichage en fonction du joueur
+    string message = message1;
+
+    // Réinitialisation de la variable de saisie de texte
+    input_text = "";
+
+    // Boucle de saisie de texte
+    while (!quit) {
+        // Gestion des événements SDL
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+            case SDL_QUIT:
+                quit = true;
+                std::exit(0);
+
+                break;
+            case SDL_TEXTINPUT:
+                // Ajouter le texte saisi à la chaîne en cours de saisie
+                input_text += event.text.text;
+                break;
+            case SDL_KEYDOWN:
+                // Gérer la touche Entrée
+                if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
+                    quit = true;
+                    joueur1.setNom(input_text);
+
+                }
+                // Gérer la touche Backspace
+                else if (event.key.keysym.sym == SDLK_BACKSPACE && input_text.length() > 0) {
+                    input_text.pop_back();
+                }
+                break;
+            }
+        }
+
+        // Effacer l'écran
+        SDL_RenderClear(renderer);
+        ChessBackground.draw(renderer, 0, 0, 844, 793);
+        // Afficher le message d'invitation à saisir
+        drawText(renderer, font, message, 200, 200);
+
+        // Afficher le texte saisi jusqu'à présent
+        if (!input_text.empty()) {
+            drawText(renderer, font, input_text, 300, 250);
+        }
+
+        // Mettre à jour l'affichage
+        SDL_RenderPresent(renderer);
+    }
+
+    // Réinitialisation de la variable de sortie de la boucle de saisie
+   
+    joueur2.setNom("Bot");
+    // Désactivation de l'entrée de texte SDL
+    SDL_StopTextInput();
+    SDL_RenderClear(renderer);
+    joueur1.setCouleur(Couleur::BLANC);
+    joueur2.setCouleur(Couleur::NOIR);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Joueur & ChessSDL2::getJoueur1(){
 	return joueur1;
 }
@@ -832,6 +925,12 @@ void ChessSDL2::echecAllSDL2() {
 
 }
 
+
+
+
+
+
+
 void ChessSDL2::drawinfo() {
     if (configJeu.getJoueurCourant() == joueur1.getCouleur()) {
         drawText(renderer, font, "Tour : " + joueur1.getNom(), 700, 2);
@@ -845,22 +944,50 @@ void ChessSDL2::drawinfo() {
 }
 
 
+void ChessSDL2::SDL2coupPossiblesBot() {
+    vector <Coup> cbot;
+    // parcours le plateau du configJeu et met un case pour chaque piece
+    for (int i = 1; i < 9; i++) {
+        //met en couleur verte les indices de colonnes
+        for (int j = 1; j < 9; j++) {
 
+            if (configJeu.getPlateau()[i][j].getCouleur() == configJeu.getJoueurCourant()) {
+                //cree un vector tempo avec les coupsPossibles et les ajoute dans cbot
+                vector <Coup> tempo = configJeu.coupsPossibles(Vec2(i, j));
+                for (int k = 0; k < tempo.size(); k++) {
+                    cbot.push_back(tempo[k]);
+                }
+                tempo.clear();
+            }
+        }
+    }
+    //Choisis un coup au hasard dans cbot
+    int random = rand() % cbot.size();
+    configJeu.deplacePiece(cbot[random]);
+    SDL_Delay(1500);
+    cbot.clear();
+    SDL_RenderClear(renderer);
+    if (withSound){
+        Mix_PlayChannel(-1, piece_sound, 0);
+    }
+    afficherPlateauSDL2();
+    afficherPiecesSDL2();
+    drawNom();
+    drawinfo();
+    SDL_RenderPresent(renderer);
+    
+}
 
-void ChessSDL2:: afficherChrono(const Joueur& j) {
-    string temps_str = to_string(j.getChrono().getHeures()) + ":" + to_string(j.getChrono().getMinutes()) + ":" + to_string(j.getChrono().getSecondes());
-
-    if (j.getCouleur() == Couleur::BLANC) {
-		drawText(renderer, font, temps_str, 360, 765);
-	}
-    else {
-		drawText(renderer, font, temps_str, 360, 2);
-	}
+void ChessSDL2:: afficherChrono() {
+    string temps_str = to_string(chrono.getMinutes()) + ":" + to_string(chrono.getSecondes());
+    drawText(renderer, font, temps_str, 700, 760);
 
 
 }
 
-
+Chrono & ChessSDL2::getChrono() {
+    return chrono;
+}
 
 
 void ChessSDL2::SDL2coupPossibles() {
@@ -870,6 +997,10 @@ void ChessSDL2::SDL2coupPossibles() {
     bool coupjoue = false;
     while(!coupjoue){    // Attend le premier clic de l'utilisateur
         SDL_PollEvent(&event);
+        SDL_RenderClear(renderer);
+        afficherPlateauSDL2();
+        drawNom();
+        drawinfo();
 
         // Parcourt le plateau si l'utilisateur a cliqué
         if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
@@ -902,6 +1033,7 @@ void ChessSDL2::SDL2coupPossibles() {
 
                             // Attend le deuxième clic de l'utilisateur pour mettre à jour le plateau
                             while (SDL_WaitEvent(&event2)) {
+                                
                                 if (event2.type == SDL_MOUSEBUTTONDOWN && event2.button.button == SDL_BUTTON_LEFT) {
                                     for (int k = 0; k < coupSDL2.size(); k++) {
                                         if (event2.button.x >= 57 + 85 * (coupSDL2[k].deplacement.getX() - 1) && event2.button.x <= 57 + 85 * coupSDL2[k].deplacement.getX() && event2.button.y >= 55 + 85 * (coupSDL2[k].deplacement.getY() - 1) && event2.button.y <= 55 + 85 * coupSDL2[k].deplacement.getY()) {
@@ -917,6 +1049,7 @@ void ChessSDL2::SDL2coupPossibles() {
                                     afficherPiecesSDL2();
                                     drawNom();
                                     drawinfo();
+                                   
                                     SDL_RenderPresent(renderer);
                                
 
@@ -1039,14 +1172,13 @@ Image& ChessSDL2::getCarreVert() {
 void ChessSDL2::SDL2Boucle() {
     bool quit = false;
     Initjoueur();
-
     afficherMenu();
     cout << debug << endl;
     
     if (debug == true){
         quit = true;
     }
-    else if (debug == false) {
+    else if (nb_joueur == 2) {
         saisirNomsJoueurs();
 
         // Initialisation du chrono
@@ -1054,9 +1186,25 @@ void ChessSDL2::SDL2Boucle() {
         afficherPiecesSDL2();
         drawNom();
         drawinfo();
+        /*
+        chrono.resume();
+        chrono.mettreAJour();
+        afficherChrono();*/
         SDL_RenderPresent(renderer);
     }
-
+    else {
+        saisirNomJoueur();
+        // Initialisation du chrono
+        afficherPlateauSDL2();
+        afficherPiecesSDL2();
+        drawNom();
+        drawinfo();
+        /*
+        chrono.resume();
+        chrono.mettreAJour();
+        afficherChrono();*/
+        SDL_RenderPresent(renderer);
+    }
 
     while (!quit){
         // Tant que ce n'est pas la fin ...
@@ -1083,8 +1231,12 @@ void ChessSDL2::SDL2Boucle() {
             SDL2coupPossibles();
             SDL_RenderPresent(renderer);
             // On permute les deux buffers (cette fonction ne doit se faire qu'une seule fois dans la boucle)
-
+            if (nb_joueur == 1 && joueur2.getCouleur() == NOIR) {
+                cout << "wsh frerot" << endl;
+                SDL2coupPossiblesBot();
+            }
         }
+
     drawVainqueur();
     }
     //boucle fin de partie

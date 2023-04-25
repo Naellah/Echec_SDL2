@@ -71,7 +71,7 @@ void Chrono::mettreAJour() {
         m_tempsHeures = totalSecondes / 3600;
         m_tempsMinutes = (totalSecondes % 3600) / 60;
         m_tempsSecondes = totalSecondes % 60;
-    }
+    }   
 }
 
 unsigned int Chrono::getHeures() const {

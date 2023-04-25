@@ -86,6 +86,8 @@ private:
     Joueur joueur1;
     Joueur joueur2;
 
+    Chrono chrono;
+    unsigned int nb_joueur = 0;
 
 
 
@@ -170,12 +172,26 @@ public:
     /**
     * @brief affiche le chrono
     */
-    void afficherChrono(const Joueur& j);
+    void afficherChrono();
+
+
+    /**
+    * @brief permet de gerer la saisie du nom d'un joueur
+    */
+    void saisirNomJoueur();
+
+
+
 
     /**
     * @brief permet de gerer la saisie des noms des joueur
     */
     void saisirNomsJoueurs();
+
+
+
+
+
 
     /**
     * @brief permet de prevenir si un des 2 roi est en echec ou en echec et mat
@@ -232,7 +248,13 @@ public:
    */
     bool getDebug()const;
 
+    Chrono& getChrono();
+
     void drawinfo();
+
+
+    void SDL2coupPossiblesBot();
+
 };
 
 

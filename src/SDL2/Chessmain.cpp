@@ -22,6 +22,7 @@
 
 int main() {
     ChessSDL2 jeu;
+    jeu.getChrono().pause();
     jeu.SDL2Boucle();
     
     if (jeu.getDebug() == true) {
