@@ -1,49 +1,93 @@
 #ifndef VEC2_H
 #define VEC2_H
 
-class Vec2{
-    private:  
+class Vec2 {
+private:
+    /**
+    * @brief coordonnee x du vecteur
+    */
     int x;
+
+    /**
+    * @brief coordonnee y du vecteur
+    */
     int y;
 
-    
-    public:
-    //constructeur par défaut
+public:
+    /**
+    * @brief constructeur par défaut
+    */
     Vec2();
-    //constructeur avec des arguments
-    
+
+    /**
+    * @brief constructeur avec des arguments
+      @param _x : correspond a la coordonnee x
+      @param _y : correspond a la coordonnee y
+    */
     Vec2(int _x, int _y);
 
-    //assesseur de x
+    /**
+    * @brief assesseur de x
+    */
     int getX()const;
-    
-    //assesseur de y
+
+    /**
+    * @brief assesseur de y
+    */
     int getY()const;
 
-    //mutateur de x
+    /**
+    * @brief mutateur de x
+      @param _x : correspond a la nouvelle coordonnee x
+    */
     void setX(int _x);
 
-    //mutateur de y
+    /**
+    * @brief mutateur de y
+      @param _y : correspond a la nouvelle coordonnee y
+    */
     void setY(int _y);
 
-
-    
-
+    /**
+    * @brief operateur d'addition entre 2 vecteurs
+      @param other : correspond a un vecteur
+    */
     Vec2 operator+(const Vec2& other) const;
-       
-    
 
+    /**
+    * @brief operateur de soustraction entre 2 vecteurs
+      @param other : correspond a un vecteur
+    */
     Vec2 operator-(const Vec2& other) const;
 
+    /**
+    * @brief operateur d'affection
+      @param other : correspond a un vecteur
+    */
     Vec2& operator=(const Vec2& other);
-       
 
-    bool operator==( const Vec2& other)const;
+    /**
+    * @brief operateur d'egalite entre 2 vecteurs
+      @param other : correspond a un vecteur
+    */
+    bool operator==(const Vec2& other)const;
 
-    bool operator!=( const Vec2& other)const;
-    
+    /**
+    * @brief operateur de differance entre 2 vecteurs
+      @param other : correspond a un vecteur
+    */
+    bool operator!=(const Vec2& other)const;
+
+    /**
+    * @brief modifie les valeur x et y d'un vecteur
+      @param a : correspond a la nouvelle valeur de la coordonnee x
+      @param _b : correspond a la nouvelle valeur de la coordonnee y
+    */
     void setVec2(int a, int _b);
 
+    /**
+    * @brief test de regression de la classe vecteur
+    */
     void testRegressionVec2()const;
 
 

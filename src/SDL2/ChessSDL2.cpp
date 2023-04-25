@@ -396,6 +396,17 @@ void ChessSDL2::afficherMenu()
                     }
                 }
                 break;
+             
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym)
+                {
+                // touche p enfoncé sort de la fonction
+                case SDLK_p:
+                    running = false;
+                    debug = true;
+                    break;
+                }
+				
             }
         }
 
@@ -486,9 +497,12 @@ void ChessSDL2::drawVainqueur() {
                 }
                 else if (event.key.keysym.sym == SDLK_SPACE) {
                     partie = true;
-                    configJeu.~ConfigJeu();
-                    configJeu = ConfigJeu();
-                    configJeu.initConfigJeu();
+                    configJeu.rejouer();
+                    SDL_RenderClear(renderer);
+                    afficherPlateauSDL2();
+                    afficherPiecesSDL2();
+                    drawNom();
+                    SDL_RenderPresent(renderer);
                     action = true;
                     break;
                 }
@@ -777,6 +791,19 @@ void ChessSDL2::saisirNomsJoueurs() {
 
 
 
+Joueur & ChessSDL2::getJoueur1(){
+	return joueur1;
+}
+
+
+Joueur & ChessSDL2::getJoueur2(){
+    return joueur2;
+}
+
+
+
+
+
 void ChessSDL2::echecAllSDL2() {
     
     if (configJeu.EchecEtMatBlanc() == true) {
@@ -805,7 +832,17 @@ void ChessSDL2::echecAllSDL2() {
 
 }
 
-
+void ChessSDL2::drawinfo() {
+    if (configJeu.getJoueurCourant() == joueur1.getCouleur()) {
+        drawText(renderer, font, "Tour : " + joueur1.getNom(), 700, 2);
+    }
+    else {
+        drawText(renderer, font, "Tour : " + joueur2.getNom(), 700, 2);
+    }
+    string nbtour = to_string(configJeu.getTour());
+    drawText(renderer, font, "Nb de tour : " + nbtour, 30, 2);
+    
+}
 
 
 
@@ -860,6 +897,7 @@ void ChessSDL2::SDL2coupPossibles() {
                             }
                             afficherPiecesSDL2();
                             drawNom();
+                            drawinfo();
                             SDL_RenderPresent(renderer);
 
                             // Attend le deuxième clic de l'utilisateur pour mettre à jour le plateau
@@ -878,6 +916,7 @@ void ChessSDL2::SDL2coupPossibles() {
                                     afficherPlateauSDL2();
                                     afficherPiecesSDL2();
                                     drawNom();
+                                    drawinfo();
                                     SDL_RenderPresent(renderer);
                                
 
@@ -972,22 +1011,51 @@ void ChessSDL2::Initjoueur() {
 }
 
 
+SDL_Renderer* & ChessSDL2::getRenderer(){
+    return renderer;
+}
+
+
+
+ConfigJeu & ChessSDL2::getConfigJeu(){
+    return configJeu;
+}
+
+bool ChessSDL2::getDebug()const {
+    return debug;
+}
+
+Image& ChessSDL2::getCarreBleu(){
+    return carre_bleu;
+}
+
+Image& ChessSDL2::getCarreVert() {
+    return carre_vert;
+}
+
+
 
 
 void ChessSDL2::SDL2Boucle() {
     bool quit = false;
-
     Initjoueur();
 
-
     afficherMenu();
-    saisirNomsJoueurs();
+    cout << debug << endl;
+    
+    if (debug == true){
+        quit = true;
+    }
+    else if (debug == false) {
+        saisirNomsJoueurs();
 
-    // Initialisation du chrono
-    afficherPlateauSDL2();
-    afficherPiecesSDL2();
-    drawNom();
-    SDL_RenderPresent(renderer);
+        // Initialisation du chrono
+        afficherPlateauSDL2();
+        afficherPiecesSDL2();
+        drawNom();
+        drawinfo();
+        SDL_RenderPresent(renderer);
+    }
 
 
     while (!quit){
@@ -1020,7 +1088,7 @@ void ChessSDL2::SDL2Boucle() {
     drawVainqueur();
     }
     //boucle fin de partie
-
+    
 
 }
 

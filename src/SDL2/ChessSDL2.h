@@ -54,6 +54,7 @@ private:
     TTF_Font* font;
     SDL_Texture* texture;
     bool partie = true;
+    bool debug = false;
 
     Mix_Chunk* piece_sound;
     Mix_Chunk* echec_blanc;
@@ -196,8 +197,42 @@ public:
     */
     void Initjoueur();
 
+    /**
+    * @brief assesseur du joueur1
+    */
+    Joueur & getJoueur1();
 
+    /**
+    * @brief assesseur du joueur2
+    */
+    Joueur & getJoueur2();
+    
+    /**
+    * @brief assesseur du renderer
+    */
+    SDL_Renderer* & getRenderer();
 
+    /**
+    * @brief assesseur du configJeu
+    */
+    ConfigJeu & getConfigJeu();
+
+    /**
+    * @brief assesseur du carre bleu
+    */
+    Image& getCarreBleu();
+
+    /**
+    * @brief assesseur du carre vert
+    */
+    Image& getCarreVert();
+
+    /**
+   * @brief assesseur du debug
+   */
+    bool getDebug()const;
+
+    void drawinfo();
 };
 
 

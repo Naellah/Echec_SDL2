@@ -1,49 +1,24 @@
 CC = g++
 FLAGS = -c -Wall -ggdb
-CFLAGS = `pkg-config --cflags gtk+-3.0`
-LIBS_GTK = `pkg-config --libs gtk+-3.0`
 INCLUDE_DIR = -Isrc -Isrc/core -Isrc/SDL2 -Itxt
 
 
 
 
-ifeq ($(OS),Windows_NT)
-	INCLUDE_DIR_SDL = 	-Isrc/SDL2 \
-                        -Iextern/x86_64-w64-mingw32/include/
 
-	LIBS_SDL = -Lextern \
-			-Lextern/SDL2_mingw-cb20/SDL2-2.0.12/x86_64-w64-mingw32/lib \
-			-Lbin \
-			-lSDL2main -lSDL2.dll -lSDL2_ttf.dll -lSDL2_image.dll -lSDL2_mixer.dll 
-
-else
-	INCLUDE_DIR_SDL = -I/usr/include/SDL2
-	LIBS_SDL = -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer -lGL
-endif
-
-
-
-ifeq ($(OS),Windows_NT)
-    EXEFILE=Chess.exe
-    ICONOBJECT=iconwindows.o
-else
-    UNAME_S := $(shell uname -s)
-    ifeq ($(UNAME_S),Linux)
-        EXEFILE=Chess
-        ICONOBJECT=iconlinux.o
-    endif
-endif
-
-SOURCES=Chessmain.cpp $(ICONOBJECT)
-
+INCLUDE_DIR_SDL = -I/usr/include/SDL2
+LIBS_SDL = -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer -lGL
 
 
 # Génère l'exécutable
-all: bin/Chesstxt
+all: bin/Chesstxt bin/"Check Mate Booster" document
 
 
-bin/Chesstxt: obj/Jeutxt.o obj/ConfigJeu.o obj/Piece.o obj/Vec2.o obj/Joueur.o obj/Classement.o
-	$(CC) obj/Jeutxt.o obj/ConfigJeu.o obj/Piece.o obj/Vec2.o obj/Joueur.o obj/Classement.o -o bin/Chesstxt
+bin/Chesstxt: obj/Jeutxt.o obj/ConfigJeu.o obj/Piece.o obj/Vec2.o obj/Joueur.o obj/Classement.o obj/Chrono.o
+	$(CC) obj/Jeutxt.o obj/ConfigJeu.o obj/Piece.o obj/Vec2.o obj/Joueur.o obj/Classement.o obj/Chrono.o -o bin/Chesstxt
+
+bin/"Check Mate Booster": obj/ChessSDL2.o obj/ConfigJeu.o obj/Piece.o obj/Vec2.o obj/Joueur.o obj/Classement.o obj/Chessmain.o obj/Chrono.o
+	$(CC) obj/ChessSDL2.o obj/ConfigJeu.o obj/Piece.o obj/Vec2.o obj/Joueur.o obj/Classement.o obj/Chessmain.o obj/Chrono.o $(LIBS_SDL) -o bin/"Check Mate Booster" 
 
 obj/Chessmain.o: src/SDL2/Chessmain.cpp 
 	$(CC) $(FLAGS) $(INCLUDE_DIR_SDL) $(INCLUDE_DIR) src/SDL2/Chessmain.cpp -o obj/Chessmain.o
@@ -69,11 +44,8 @@ obj/Jeutxt.o: src/txt/Jeutxt.cpp
 obj/Vec2.o: src/core/Vec2.cpp src/core/Vec2.h  
 	$(CC) $(FLAGS) $(INCLUDE_DIR_SDL) $(INCLUDE_DIR) src/core/Vec2.cpp -o obj/Vec2.o
 
-iconwindows.o: icon/iconwindows.cpp
-	$(CC) icon/iconwindows.cpp -o obj/$@
-
-iconlinux.o: icon/iconlinux.cpp
-	g++ `pkg-config --cflags gtk+-3.0` icon/iconlinux.cpp `pkg-config --libs gtk+-3.0` -o obj/iconlinux.o
+obj/Chrono.o: src/core/Chrono.cpp src/core/Chrono.h  
+	$(CC) $(FLAGS) $(INCLUDE_DIR_SDL) $(INCLUDE_DIR) src/core/Chrono.cpp -o obj/Chrono.o
 
 
 
@@ -112,13 +84,25 @@ else
 endif
 
 
+
+#genere la documentation
+document:
+	doxygen -g doc/image.doxy 
+	gedit doc/image.doxy
+	doxygen doc/image.doxy
+	google-chrome doc/html/index.html
+
+
+
+
 # Nettoie les fichiers générés
 clean:
 ifeq ($(OS),Windows_NT)
-	del /s /q bin\*Chess* obj\*.* data\*.txt*
+	del /s /q bin\*Chess* obj\*.* data\*.txt* doc\*.*
 else
 	rm -f obj/*.o
 	rm -f bin/*
 	rm -f data/*.txt
+	rm -f doc/*
 endif
 	

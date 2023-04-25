@@ -96,6 +96,16 @@ void Joueur::setNom(string _nom){
     nom = _nom;
 }
 
+
+void Joueur::setNomBot1() {
+    nom = "Bot1";
+}
+
+void Joueur::setNomBot2() {
+    nom = "Bot2";
+}
+
+
 void Joueur::setCouleur(Couleur _couleur){
     couleur = _couleur;
 }

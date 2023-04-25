@@ -94,11 +94,11 @@ void Piece :: setPosition(Vec2 pos){
 }
 
 
-const Couleur& Piece :: getCouleur()const{
+const Couleur Piece :: getCouleur()const{
     return couleur;
 }
 
-const TypePiece& Piece :: getType()const{
+const TypePiece Piece :: getType()const{
     return type;
 }
 

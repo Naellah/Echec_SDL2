@@ -130,6 +130,18 @@ public:
     void setNom(string _nom);
 
     /**
+    * @brief mutateur pour un bot1
+    */
+    void setNomBot1();
+
+    /**
+    * @brief mutateur pour un bot1
+    */
+    void setNomBot2();
+
+
+
+    /**
     * @brief mutateur couleur
       @param _couleur : correspond a une couleur qui sera la nouvelle couleur
     */

@@ -137,7 +137,7 @@ public:
     /**
     * @brief assesseur du joueur courant
     */
-    const Couleur& getJoueurCourant()const;
+    const Couleur getJoueurCourant()const;
 
     /**
     * @brief retourne une phrase disant qui doit jouer
@@ -200,7 +200,7 @@ public:
 
 
     /**
-    * @brief /*retourne vrai si pour un coup donné, il n'y a pas d'obstacle
+    * @brief retourne vrai si pour un coup donné, il n'y a pas d'obstacle
     entre la position de départ et la position d'arrivée et que le coup
     ne fasse pas sortir la pièce du plateau
     */
@@ -216,10 +216,24 @@ public:
     */
     Couleur couleurGagnante()const;
 
+
+    /**
+    * @brief remet le jeu dans son etat initial
+    */
+    void rejouer();
+
+
     /**
     * @brief test de regression de ConfigJeu
     */
     void testRegressionConfigJeu()const;
+
+
+    /**
+    * @brief assesseur du nombre de tour
+    */
+    unsigned int getTour()const;
+
 
 };
 

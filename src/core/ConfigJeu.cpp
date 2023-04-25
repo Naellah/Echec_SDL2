@@ -951,6 +951,7 @@ void ConfigJeu :: deplacePiece(const Coup& c){
     plateau[c.deplacement.getX()][c.deplacement.getY()].setPosition(c.deplacement);
     plateau[c.posi.getX()][c.posi.getY()] = Piece(Couleur::VIDEC,TypePiece::VIDE,Vec2(c.posi.getX(),c.posi.getY()));
     setJoueurCourant();
+    tour++;
 }
 
 
@@ -962,7 +963,7 @@ const vector<vector<Piece>>& ConfigJeu :: getPlateau()const{
 }
 
 
-const Couleur& ConfigJeu :: getJoueurCourant()const{
+const Couleur ConfigJeu :: getJoueurCourant()const{
     return this->joueurCourant;
 }
 
@@ -989,7 +990,29 @@ void ConfigJeu :: estMangeConfig(Piece &p){
         p=Piece(Couleur::VIDEC,TypePiece::VIDE,Vec2(0,0));
         nbPiecesNoires--;
     }
+    
 }
+
+
+void ConfigJeu::rejouer() {
+    piecesBlanches.clear();
+    piecesNoires.clear();
+    plateau.clear();
+    plateau.reserve(10);
+    joueurCourant = Couleur::BLANC;
+    for (int i = 0; i < 10; i++) {
+        plateau.push_back(vector<Piece>(10));
+    }
+    initConfigJeu();
+
+}
+
+
+
+unsigned int ConfigJeu::getTour()const {
+    return tour;
+}
+
 
 
 
