@@ -91,7 +91,7 @@ Coup Ia :: minmax(ConfigJeu & config){
     for (int i = 0; i < config.getPlateau().size(); i++) {
         for (int j = 0; j < config.getPlateau()[i].size(); j++) {
             // si la case n'est pas vide
-            if (config.getPlateau()[i][j].getType() != VIDE) {
+            if (config.getPlateau()[i][j].getType() != VIDE && config.getPlateau()[i][j].getCouleur() == config.getJoueurCourant()) {
                 // parcours des coups possibles
                 coups = config.coupsPossibles(Vec2(i,j));
                 for (int k = 0; k < coups.size(); k++) {
