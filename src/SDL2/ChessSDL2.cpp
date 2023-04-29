@@ -16,6 +16,8 @@
 #include "../core/ConfigJeu.h"
 #include "../core/Classement.h"
 #include "ChessSDL2.h"
+#include "../core/Noeud.h"
+#include "../core/Ia.h"
 
 
 using namespace std;
@@ -252,7 +254,7 @@ ChessSDL2 :: ChessSDL2(){
     dameBlanc.loadFromFile("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\/white_queen.png",renderer);
     assert(dameBlanc.getTexture() != nullptr);
     roiBlanc.loadFromFile("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\/white_king.png",renderer);
-    assert(roiBlanc.getTexture() != nullptr);
+    assert(roiBlanc.getTexture() != nullptr);   
 
     //charge la police
     font = TTF_OpenFont("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\font.ttf", 20);
@@ -947,6 +949,7 @@ void ChessSDL2::drawinfo() {
 void ChessSDL2::SDL2coupPossiblesBot() {
     vector <Coup> cbot;
     // parcours le plateau du configJeu et met un case pour chaque piece
+    /*
     for (int i = 1; i < 9; i++) {
         //met en couleur verte les indices de colonnes
         for (int j = 1; j < 9; j++) {
@@ -963,9 +966,11 @@ void ChessSDL2::SDL2coupPossiblesBot() {
     }
     //Choisis un coup au hasard dans cbot
     int random = rand() % cbot.size();
-    configJeu.deplacePiece(cbot[random]);
+    */
+    Coup iacoup = ia.minmax(configJeu);
+    configJeu.deplacePiece(iacoup);
     SDL_Delay(1500);
-    cbot.clear();
+    //cbot.clear();
     SDL_RenderClear(renderer);
     if (withSound){
         Mix_PlayChannel(-1, piece_sound, 0);
@@ -1232,7 +1237,6 @@ void ChessSDL2::SDL2Boucle() {
             SDL_RenderPresent(renderer);
             // On permute les deux buffers (cette fonction ne doit se faire qu'une seule fois dans la boucle)
             if (nb_joueur == 1 && joueur2.getCouleur() == NOIR) {
-                cout << "wsh frerot" << endl;
                 SDL2coupPossiblesBot();
             }
         }

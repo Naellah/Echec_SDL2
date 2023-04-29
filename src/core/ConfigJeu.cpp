@@ -946,6 +946,10 @@ Vec2 ConfigJeu :: recuperePosition(const char& lettre, const char& chiffre)const
 
 
 void ConfigJeu :: deplacePiece(const Coup& c){
+    //on remplace dernier coup joue par le nouveau coup
+    dernierCoup.clear();
+    dernierCoup.push_back(getPiece(c.posi));
+    dernierCoup.push_back(getPiece(c.deplacement));
     estMangeConfig(plateau[c.deplacement.getX()][c.deplacement.getY()]);
     plateau[c.deplacement.getX()][c.deplacement.getY()] = plateau[c.posi.getX()][c.posi.getY()];
     plateau[c.deplacement.getX()][c.deplacement.getY()].setPosition(c.deplacement);
@@ -954,7 +958,23 @@ void ConfigJeu :: deplacePiece(const Coup& c){
     tour++;
 }
 
+void ConfigJeu :: deplacePieceTest(const Coup& c){
+    //on remplace dernier coup joue par le nouveau coup
+    dernierCoup.clear();
+    dernierCoup.push_back(getPiece(c.posi));
+    dernierCoup.push_back(getPiece(c.deplacement));
+    estMangeConfig(plateau[c.deplacement.getX()][c.deplacement.getY()]);
+    plateau[c.deplacement.getX()][c.deplacement.getY()] = plateau[c.posi.getX()][c.posi.getY()];
+    plateau[c.deplacement.getX()][c.deplacement.getY()].setPosition(c.deplacement);
+    plateau[c.posi.getX()][c.posi.getY()] = Piece(Couleur::VIDEC,TypePiece::VIDE,Vec2(c.posi.getX(),c.posi.getY()));
+}
 
+void ConfigJeu ::annulerCoup(){
+    //on remet la piece mangee
+    plateau[dernierCoup[1].getPosition().getX()][dernierCoup[1].getPosition().getY()] = dernierCoup[1];
+    //on remet la piece deplacee
+    plateau[dernierCoup[0].getPosition().getX()][dernierCoup[0].getPosition().getY()] = dernierCoup[0];
+}
 
 
 
@@ -987,8 +1007,22 @@ void ConfigJeu :: estMangeConfig(Piece &p){
     }
     else if (p.getCouleur() == Couleur::NOIR) {
        // p devient nulle
-        p=Piece(Couleur::VIDEC,TypePiece::VIDE,Vec2(0,0));
+        p.estmangee();
         nbPiecesNoires--;
+    }
+    
+}
+
+void ConfigJeu :: estMangeConfigTest(Piece &p){
+    if (p.getCouleur() == Couleur::BLANC) {
+        // p devient nulle
+        p.estmangee();
+        
+    }
+    else if (p.getCouleur() == Couleur::NOIR) {
+       // p devient nulle
+        p.estmangee();
+       
     }
     
 }

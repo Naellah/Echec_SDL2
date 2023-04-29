@@ -88,6 +88,12 @@ private:
     */
     unsigned int nbPiecesNoires;
 
+    /**
+    * @brief vector contenant le dernier coup qui stocke donc la piece position de depart et la piece position d'arrive
+    */
+    vector<Piece> dernierCoup;
+    
+
 public:
 
     /**
@@ -134,6 +140,18 @@ public:
     */
     void deplacePiece(const Coup& c);
 
+      /**
+    * @brief deplace la piece selon un coup et passe au joueur suivant (pour les tests)
+      @param c : correspond a un coup
+    */
+    void deplacePieceTest(const Coup& c);
+
+    /**
+     * @brief annule le dernier coup joué
+     */
+    void annulerCoup();
+
+
     /**
     * @brief assesseur du joueur courant
     */
@@ -172,6 +190,12 @@ public:
       @param p : correspond a une piece
     */
     void estMangeConfig(Piece& p);
+
+      /**
+    * @brief modifie les valeurs d'une piece si elle est mange
+      @param p : correspond a une piece
+    */
+    void estMangeConfigTest(Piece& p);
 
     /**
     * @brief renvoie vrai si le roi blanc est en echec

@@ -14,6 +14,9 @@
 #include "../core/Joueur.h"
 #include "../core/ConfigJeu.h"
 #include "../core/Classement.h"
+#include "../core/Chrono.h"
+#include "../core/Noeud.h"
+#include "../core/Ia.h"
 #include "ChessSDL2.h"
 #include "Testdebug.h"
 

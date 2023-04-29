@@ -15,6 +15,8 @@
 #include "../core/Joueur.h"
 #include "../core/Piece.h"
 #include "../core/ConfigJeu.h"
+#include "../core/Noeud.h"
+#include "../core/Ia.h"
 
 
 
@@ -85,6 +87,8 @@ private:
 
     Joueur joueur1;
     Joueur joueur2;
+
+    Ia ia;
 
     Chrono chrono;
     unsigned int nb_joueur = 0;
