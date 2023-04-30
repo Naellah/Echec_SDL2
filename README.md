@@ -70,7 +70,7 @@ ou :
 
 ## Windows : 
 
-Pour pouvoir jouer au jeu d'éches sur Windows, il faudra utiliser Visual Studio et installer les librairies SDL2 pour Visual Studio (Vc)
+Pour pouvoir jouer sur Windows, il vous faudra utiliser Visual Studio et installer les librairies SDL2 pour Visual Studio (Vc).
 Créer un projet Solution et mettez les fichiers headers (.h) dans les fichiers d'en tête et les sources (.cpp) dans les fichiers souces avec l'explorateur de solutions. Mettre les répertoires d'inclusions de SDL2 dans les propriétés de projets(dossier include), dans l'editeur de liens (dossier lib) et dans les dépendances supplémentaires (.lib). Mettre si cela ne fonctionne pas en plus les .dll de SDL2 dans le dossier contenant l'executable.
 
 
