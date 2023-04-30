@@ -79,11 +79,17 @@ private:
     Image dameBlanc;
     Image roiNoire;
     Image roiBlanc;
-    Image plateauImage;
+    Image plateauImageRouge;
+    Image plateauImageBleu;
+    Image plateauImageMarron;
+    Image plateauImageViolet;
+    Image valider;
     Image ChessBackground;
     Image carre_bleu;
     Image carre_vert;
+    Image retour;
 
+    unsigned int couleur_plateau = 0;
 
     Joueur joueur1;
     Joueur joueur2;
@@ -93,7 +99,7 @@ private:
     Chrono chrono;
     unsigned int nb_joueur = 0;
 
-
+    
 
 public:
 
@@ -124,6 +130,13 @@ public:
     * @brief affiche le tout
     */
     void SDL2Boucle();
+
+
+    void drawValider();
+
+    void drawParamemtres();
+
+
 
 
     /**
@@ -255,6 +268,11 @@ public:
     Chrono& getChrono();
 
     void drawinfo();
+
+
+    void drawParamemtresDifficulte();
+
+    void drawParamemtresCouleurPlateau();
 
 
     void SDL2coupPossiblesBot();

@@ -226,10 +226,16 @@ ChessSDL2 :: ChessSDL2(){
 
   
 
-    plateauImage.loadFromFilePlateau("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\plateau.png",renderer);
+    plateauImageRouge.loadFromFilePlateau("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\plateau.png",renderer);
+    plateauImageBleu.loadFromFilePlateau("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\plateau_bleu.png", renderer);
+    plateauImageMarron.loadFromFilePlateau("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\plateau_marron.png", renderer);
+    plateauImageViolet.loadFromFilePlateau("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\plateau_violet.png", renderer);
+
     ChessBackground.loadFromFile("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\background_epure.png",renderer);
+
     carre_bleu.loadFromFile("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\carre_bleu.png",renderer);
     carre_vert.loadFromFile("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\carre_vert.png", renderer);
+    valider.loadFromFilePlateau("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\valider.png", renderer);
 
     pionNoire.loadFromFile("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\/black_pawn.png",renderer);
     assert(pionNoire.getTexture() != nullptr);
@@ -254,7 +260,9 @@ ChessSDL2 :: ChessSDL2(){
     dameBlanc.loadFromFile("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\/white_queen.png",renderer);
     assert(dameBlanc.getTexture() != nullptr);
     roiBlanc.loadFromFile("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\/white_king.png",renderer);
-    assert(roiBlanc.getTexture() != nullptr);   
+    assert(roiBlanc.getTexture() != nullptr); 
+
+    retour.loadFromFile("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\retour.png",renderer); 
 
     //charge la police
     font = TTF_OpenFont("C:\\Users\\naell\\Documents\\Code\\Echecs\\chess\\data\\font.ttf", 20);
@@ -308,22 +316,29 @@ ChessSDL2 :: ~ChessSDL2(){
 
 
 
-
-  
-
-
-
-
+void ChessSDL2::drawValider() {
+    valider.draw(renderer, 0, 0, 90, 90);
+}
 
 
 
 void ChessSDL2::afficherPlateauSDL2() {
     //SDL_RenderClear(renderer);
-    plateauImage.draw(renderer,0,25,794,743);
+    if (couleur_plateau == 0) {
+        plateauImageRouge.draw(renderer, 0, 25, 794, 743);
+    }
+    if (couleur_plateau == 1) {
+        plateauImageBleu.draw(renderer, 0, 25, 794, 743);
+    }
+    if (couleur_plateau == 2) {
+        plateauImageMarron.draw(renderer, 0, 25, 794, 743);
+    }
+    if (couleur_plateau == 3) {
+        plateauImageViolet.draw(renderer, 0, 25, 794, 743);
+    }
+        
     
 }
-
-
 
 // Fonction pour dessiner un texte à l'écran
 
@@ -389,7 +404,7 @@ void ChessSDL2::afficherMenu()
                     else if (x >= 300 && x <= 600 && y >= 380 && y <= 420)
                     {
                         cout << "Parametres" << endl;
-                        // afficherParametres() pas encore fait
+                        drawParamemtres();
                     }
                     else if (x >= 300 && x <= 600 && y >= 480 && y <= 520)
                     {
@@ -431,9 +446,7 @@ void ChessSDL2::afficherMenu()
 }
 
 
-void ChessSDL2 :: afficherParametres(){
-    
-}
+
 
 
 
@@ -454,6 +467,10 @@ void ChessSDL2::drawNom(){
     }
 
 }
+
+
+
+
 
 
 void ChessSDL2::drawVainqueur() {
@@ -941,7 +958,7 @@ void ChessSDL2::drawinfo() {
         drawText(renderer, font, "Tour : " + joueur2.getNom(), 700, 2);
     }
     string nbtour = to_string(configJeu.getTour());
-    drawText(renderer, font, "Nb de tour : " + nbtour, 30, 2);
+    
     
 }
 
@@ -1048,6 +1065,14 @@ void ChessSDL2::SDL2coupPossibles() {
                                                 Mix_PlayChannel(-1, piece_sound, 0);
                                             break;
                                         }
+                                        if (event2.button.x >= 10 && event2.button.x <= 80 && event2.button.y >= 5 && event2.button.y <= 53)
+                                        {
+                                            
+                                            coupjoue = true;
+                                            partie = false;
+                                            std::exit(0);
+                                            
+                                        }
                                     }
                                     coupSDL2.clear();
                                     afficherPlateauSDL2();
@@ -1084,6 +1109,14 @@ void ChessSDL2::SDL2coupPossibles() {
                         
                         
                         }
+                        if (event.button.x >= 10 && event.button.x <= 80 && event.button.y >= 5 && event.button.y <= 53)
+                        {
+                            
+                            coupjoue = true;
+                            partie = false;
+                            std::exit(0);
+                        }
+                        
                     }
                 }
             }
@@ -1172,6 +1205,249 @@ Image& ChessSDL2::getCarreVert() {
 }
 
 
+
+void ChessSDL2 :: drawParamemtresCouleurPlateau(){
+    bool running = true;
+    while (running)
+    {
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                running = false;
+                SDL_DestroyRenderer(renderer);
+                SDL_DestroyWindow(window);
+                SDL_Quit();
+                std::exit(0);
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_LEFT)
+                {
+                    int x = event.button.x;
+                    int y = event.button.y;
+
+                    if (x >= 10 && x <= 80 && y >= 5 && y <= 53)
+                    {
+                        running = false;
+                        
+                    }
+                    if (x >= 300 && x <= 450 && y >= 180 && y <= 220)
+                    {
+                        
+                        couleur_plateau = 0;
+
+                    }
+                    if (x >= 300 && x <= 450 && y >= 280 && y <= 320)
+                    {
+                        
+                        couleur_plateau = 1;
+
+                    }
+                    if (x >= 300 && x <= 450 && y >= 380 && y <= 420)
+                    {
+                        
+                        couleur_plateau = 2;
+
+                    }
+                    if (x >= 300 && x <= 450 && y >= 480 && y <= 520)
+                    {
+                        
+                        couleur_plateau = 3;
+
+                    }
+
+                    
+                }
+                break;
+            }
+        }
+
+        SDL_RenderClear(renderer);
+        ChessBackground.draw(renderer, 0, 0, 844, 793);
+
+        // Dessine le texte des options du menu
+        if (couleur_plateau == 0)
+        {
+            
+            drawText(renderer, font, "Rouge (couleur actuelle)", 300, 200);
+            drawText(renderer, font, "Bleu", 300, 300);
+            drawText(renderer, font, "Marron", 300, 400);
+            drawText(renderer, font, "Violet", 300, 500);
+        }
+        else if (couleur_plateau == 1)
+        {
+            
+            drawText(renderer, font, "Rouge", 300, 200);
+            drawText(renderer, font, "Bleu (couleur actuelle)", 300, 300);
+            drawText(renderer, font, "Marron", 300, 400);
+            drawText(renderer, font, "Violet", 300, 500);
+        }
+        else if (couleur_plateau == 2)
+        {
+            
+            drawText(renderer, font, "Rouge", 300, 200);
+            drawText(renderer, font, "Bleu", 300, 300);
+            drawText(renderer, font, "Marron (couleur actuelle)", 300, 400);
+            drawText(renderer, font, "Violet", 300, 500);
+        }
+        else if (couleur_plateau == 3)
+        {
+            
+            drawText(renderer, font, "Rouge", 300, 200);
+            drawText(renderer, font, "Bleu", 300, 300);
+            drawText(renderer, font, "Marron", 300, 400);
+            drawText(renderer, font, "Violet (couleur actuelle)", 300, 500);
+        }
+        
+        retour.draw(renderer, 10, 5, 70, 48);
+
+        SDL_RenderPresent(renderer);
+        SDL_RenderClear(renderer);
+    }
+}
+
+
+
+
+void ChessSDL2::drawParamemtres() {
+    bool running = true;
+    while (running)
+    {
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                running = false;
+                SDL_DestroyRenderer(renderer);
+                SDL_DestroyWindow(window);
+                SDL_Quit();
+                std::exit(0);
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_LEFT)
+                {
+                    int x = event.button.x;
+                    int y = event.button.y;
+
+                    if (x >= 10 && x <= 80 && y >= 5 && y <= 53)
+                    {
+                        running = false;
+                    }
+
+
+                    if (x >= 300 && x <= 450 && y >= 180 && y <= 220)
+                    {
+                        
+                        drawParamemtresDifficulte();
+                        
+
+                    }
+
+                    else if (x >= 300 && x <= 600 && y >= 380 && y <= 420)
+                    {
+                        
+                        drawParamemtresCouleurPlateau();
+                    }
+                    
+                }
+                break;
+
+            
+            }
+        }
+
+        SDL_RenderClear(renderer);
+        ChessBackground.draw(renderer, 0, 0, 844, 793);
+
+        // Dessine le texte des options du menu
+        
+        drawText(renderer, font, "Difficulte", 300, 200);
+        drawText(renderer, font, "Couleur Plateau", 300, 400);
+        retour.draw(renderer, 50, 50, 70, 48);
+
+        SDL_RenderPresent(renderer);
+        SDL_RenderClear(renderer);
+    }
+}
+
+
+
+
+
+void ChessSDL2::drawParamemtresDifficulte() {
+    bool running = true;
+    while (running)
+    {
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                running = false;
+                SDL_DestroyRenderer(renderer);
+                SDL_DestroyWindow(window);
+                SDL_Quit();
+                std::exit(0);
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_LEFT)
+                {
+                    int x = event.button.x;
+                    int y = event.button.y;
+                    if (x >= 10 && x <= 80 && y >= 5 && y <= 53)
+                    {
+                        running = false;
+
+
+                    }
+                    if (x >= 300 && x <= 450 && y >= 180 && y <= 220)
+                    {
+
+
+                        configJeu.setDifficulte(Difficulte::FACILE);
+                        
+
+
+                    }
+                    else if (x >= 300 && x <= 600 && y >= 280 && y <= 320)
+                    {
+
+                        configJeu.setDifficulte(Difficulte::MOYEN);
+                    }
+                    else if (x >= 300 && x <= 600 && y >= 380 && y <= 420)
+                    {
+
+                        configJeu.setDifficulte(Difficulte::DIFFICILE);
+                    }
+                    else if (x >= 300 && x <= 410 && y >= 510 && y <= 690)
+                    {
+                        running = false;
+                    }
+                }
+                break;
+
+            }
+        }
+
+        SDL_RenderClear(renderer);
+        ChessBackground.draw(renderer, 0, 0, 844, 793);
+
+        // Dessine le texte des options du menu
+        drawText(renderer, font, "Facile", 300, 200);
+        drawText(renderer, font, "Moyen", 300, 300);
+        drawText(renderer, font, "Difficile", 300, 400);
+        valider.draw(renderer, 320, 600, 90, 90);
+        retour.draw(renderer, 10, 5, 70, 48);
+
+        SDL_RenderPresent(renderer);
+        SDL_RenderClear(renderer);
+    }
+}
 
 
 void ChessSDL2::SDL2Boucle() {

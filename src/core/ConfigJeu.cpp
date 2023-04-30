@@ -22,6 +22,7 @@ ConfigJeu :: ConfigJeu(){
     nbPiecesBlanches = 16;
     nbPiecesNoires = 16;
     tour = 1;
+    difficulte = MOYEN;
 }
   
 ConfigJeu :: ~ConfigJeu(){
@@ -816,7 +817,10 @@ void ConfigJeu::Echecall()const {
 
 
 
-
+void ConfigJeu :: setDifficulte(const Difficulte & d){
+    difficulte = d;
+    cout << difficulte << endl;
+}
 
 
 

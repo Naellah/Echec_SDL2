@@ -11,6 +11,19 @@
 
 using namespace std;
 
+/**
+* @brief diificulté
+*/
+enum Difficulte {
+  FACILE,
+  MOYEN,
+  DIFFICILE
+};
+
+
+
+
+
 struct Coup {
     Vec2 posi;
     Vec2 deplacement;
@@ -99,6 +112,12 @@ private:
      */
     stack <Coup> allCoups;
 
+    /**
+     * @brief enum de la difficulté
+     */
+    Difficulte difficulte;
+
+
 public:
 
     /**
@@ -115,6 +134,7 @@ public:
     * @brief init le jeu
     */
     void initConfigJeu();
+
 
     /**
     * @brief retourne un tableau de coups possibles d'une piece
@@ -182,6 +202,14 @@ public:
     * @brief mutateurs du joueur qui joue
     */
     void setJoueurCourant();
+
+    /**
+    * @brief mutateurs de la difficulté
+    */
+    void setDifficulte(const Difficulte& d);
+
+    
+   
 
     /**
     * @brief recupere le vec2 coordonnees selon ses coordonnées lettre et chiffre
