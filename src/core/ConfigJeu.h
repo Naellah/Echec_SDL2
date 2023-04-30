@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <stack>
 
 using namespace std;
 
@@ -89,10 +90,14 @@ private:
     unsigned int nbPiecesNoires;
 
     /**
-    * @brief vector contenant le dernier coup qui stocke donc la piece position de depart et la piece position d'arrive
+    * @brief pile contenant les dernier coups 
     */
-    vector<Piece> dernierCoup;
-    
+    stack <Piece> dernierCoup;
+
+    /**
+     * @brief pile contenant les coups
+     */
+    stack <Coup> allCoups;
 
 public:
 

@@ -5,6 +5,8 @@
 #include "Piece.h"
 #include "Vec2.h"
 
+
+#include <stack>
 #include <set>
 
 using namespace std;
@@ -947,9 +949,8 @@ Vec2 ConfigJeu :: recuperePosition(const char& lettre, const char& chiffre)const
 
 void ConfigJeu :: deplacePiece(const Coup& c){
     //on remplace dernier coup joue par le nouveau coup
-    dernierCoup.clear();
-    dernierCoup.push_back(getPiece(c.posi));
-    dernierCoup.push_back(getPiece(c.deplacement));
+    dernierCoup.push(getPiece(c.posi));
+    dernierCoup.push(getPiece(c.deplacement));
     estMangeConfig(plateau[c.deplacement.getX()][c.deplacement.getY()]);
     plateau[c.deplacement.getX()][c.deplacement.getY()] = plateau[c.posi.getX()][c.posi.getY()];
     plateau[c.deplacement.getX()][c.deplacement.getY()].setPosition(c.deplacement);
@@ -960,9 +961,8 @@ void ConfigJeu :: deplacePiece(const Coup& c){
 
 void ConfigJeu :: deplacePieceTest(const Coup& c){
     //on remplace dernier coup joue par le nouveau coup
-    dernierCoup.clear();
-    dernierCoup.push_back(getPiece(c.posi));
-    dernierCoup.push_back(getPiece(c.deplacement));
+    dernierCoup.push(getPiece(c.posi));
+    dernierCoup.push(getPiece(c.deplacement));
     estMangeConfig(plateau[c.deplacement.getX()][c.deplacement.getY()]);
     plateau[c.deplacement.getX()][c.deplacement.getY()] = plateau[c.posi.getX()][c.posi.getY()];
     plateau[c.deplacement.getX()][c.deplacement.getY()].setPosition(c.deplacement);
@@ -970,10 +970,13 @@ void ConfigJeu :: deplacePieceTest(const Coup& c){
 }
 
 void ConfigJeu ::annulerCoup(){
-    //on remet la piece mangee
-    plateau[dernierCoup[1].getPosition().getX()][dernierCoup[1].getPosition().getY()] = dernierCoup[1];
-    //on remet la piece deplacee
-    plateau[dernierCoup[0].getPosition().getX()][dernierCoup[0].getPosition().getY()] = dernierCoup[0];
+    //on remet la piece mangee à partir du dernier coup joue de la pile dernierCoup en prenant le sommet
+    plateau[dernierCoup.top().getPosition().getX()][dernierCoup.top().getPosition().getY()] = dernierCoup.top();
+    dernierCoup.pop();
+    //on remet la piece deplacee à partir du dernier coup joue de la pile dernierCoup en prenant le sommet
+    plateau[dernierCoup.top().getPosition().getX()][dernierCoup.top().getPosition().getY()] = dernierCoup.top();
+    dernierCoup.pop();
+   
 }
 
 

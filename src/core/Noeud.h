@@ -12,6 +12,7 @@
 class Noeud {
 
     private:
+
     int valeur;
     Coup coup;
     vector<Noeud*> fils;

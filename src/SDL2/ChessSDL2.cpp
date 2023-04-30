@@ -1235,7 +1235,6 @@ void ChessSDL2::SDL2Boucle() {
             //affichercarre(coupSDL2);
             SDL2coupPossibles();
             SDL_RenderPresent(renderer);
-            // On permute les deux buffers (cette fonction ne doit se faire qu'une seule fois dans la boucle)
             if (nb_joueur == 1 && joueur2.getCouleur() == NOIR) {
                 SDL2coupPossiblesBot();
             }
@@ -1243,7 +1242,7 @@ void ChessSDL2::SDL2Boucle() {
 
     drawVainqueur();
     }
-    //boucle fin de partie
+   
     
 
 }

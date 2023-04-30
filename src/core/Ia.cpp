@@ -86,6 +86,7 @@ Coup Ia :: minmax(ConfigJeu & config){
     arbre.supprimeArbre();
     arbre.setValeur(valeurPlateau(config));
     vector <Coup> coups;
+    vector <Coup> coups1;
     int val;
     // parcours du plateau
     for (int i = 0; i < config.getPlateau().size(); i++) {
@@ -94,29 +95,72 @@ Coup Ia :: minmax(ConfigJeu & config){
             if (config.getPlateau()[i][j].getType() != VIDE && config.getPlateau()[i][j].getCouleur() == config.getJoueurCourant()) {
                 // parcours des coups possibles
                 coups = config.coupsPossibles(Vec2(i,j));
+                
+                //profondeur 2
                 for (int k = 0; k < coups.size(); k++) {
                     // on joue le coup
                     config.deplacePieceTest(coups[k]);
                     val = valeurPlateau(config);
                     cout << "valeur2 : " << val << endl;
-                     // on ajoute la valeur du plateau a l'arbre
-                     ajouterConfig(val,coups[k]);
-                     // on annule le coup
+                    // on ajoute la valeur du plateau a l'arbre
+                    ajouterConfig(val,coups[k]);
+                    // pointeur vers le noeud fils
+                    Noeud* fils1 = arbre.getFilsVec()[k];
+
+                    cout << "fils1 : " << fils1->getValeur() << endl;
+                    //profondeur 3
+                    config.setJoueurCourant();
+                    for (int l = 0; l < config.getPlateau().size(); l++) {
+                        for (int m = 0; m < config.getPlateau()[l].size(); m++) {
+                            // si la case n'est pas vide
+                            if (config.getPlateau()[l][m].getType() != VIDE && config.getPlateau()[l][m].getCouleur() == config.getJoueurCourant()) {
+                                // parcours des coups possibles
+                                
+                                coups1 = config.coupsPossibles(Vec2(l,m));
+                                
+                                for (int n = 0; n < coups1.size(); n++) {
+                                    // on joue le coup
+                                    config.deplacePieceTest(coups1[n]);
+                                    config.setJoueurCourant();
+                                    val = valeurPlateau(config);
+                                    config.setJoueurCourant();
+                                    cout << "valeur3 : " << val << endl;
+                                    // on ajoute la valeur du plateau a l'arbre
+                                    fils1->ajouterFils(val,coups1[n]);
+
+                                    config.annulerCoup();
+                                    // pointeur vers le noeud fils
+                                    //Noeud* fils2 = fils->getFilsVec()[n];
+
+                                }
+                                coups1.clear();
+                            }
+                        }
+                    }
                     config.annulerCoup();
+                    config.setJoueurCourant();
                 }
                 coups.clear();   
             }
         }
     }
-    // on parcours le vecteur de fils de l'arbre et on prend le max
+    cout << "atteint" << endl;
+    // on parcours le vecteur de fils de chaque fils de l'arbre et on prend le minimum et ensuite on prend le maximum de ces minimums
     Noeud* max = arbre.getFilsVec()[0];
-    for (int i = 1; i < arbre.getFilsVec().size(); i++) {
-        if (arbre.getFilsVec()[i]->getValeur() > max->getValeur()) {
-            max = arbre.getFilsVec()[i];
-           
+   for (int i = 0; i < arbre.getFilsVec().size(); i++) {
+        if (!arbre.getFilsVec().empty() && !arbre.getFilsVec()[i]->getFilsVec().empty()) {
+            Noeud* min = arbre.getFilsVec()[i]->getFilsVec()[0];
+            for (int j = 0; j < arbre.getFilsVec()[i]->getFilsVec().size(); j++) {
+                if (arbre.getFilsVec()[i]->getFilsVec()[j]->getValeur() < min->getValeur()) {
+                    min = arbre.getFilsVec()[i]->getFilsVec()[j];
+                }
+            }
+            if (min->getValeur() > max->getValeur()) {
+                max = min;
+            }
         }
-         //cout << "valeur : " << arbre.getFilsVec()[i]->getValeur() << endl;
-    }
+    }   
+
     // on retourne la valeur du meilleur coup
     cout << "valeur max : " << max->getValeur() << endl;
     return max->getCoup();

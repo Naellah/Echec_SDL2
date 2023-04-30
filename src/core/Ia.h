@@ -15,10 +15,11 @@ using namespace std;
 class Ia {
     
     private:
-       Noeud arbre;
+       
     /**
-     * @brief enum qui designe les valeurs des pieces
+     * @brief Arbre de recherche
      */
+     Noeud arbre;
     
     public:
 
